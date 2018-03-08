@@ -6,7 +6,7 @@ class Airplane(
   fuelCapacity: Int,
   fuelConsumption: Double,
   var altitude: Int,
-  timeToDestination: Int,
+  var timeToDestination: Int,
   totalCargoWeight: Int,
   minRunwaylength: Int,
   passengers: Int,
@@ -15,6 +15,7 @@ class Airplane(
   
   /*Additional values and variables*/
   var fuel = fuelCapacity //mahdollisesti minus joku luku mut meh...
+  
   
   /*Functions*/
   def changeAltitude(newAltitude: Int): Unit = altitude = newAltitude
@@ -26,6 +27,7 @@ class Airplane(
   def sendToQueue(number: Int): Unit = airport.sendToQueue(airport.getQueueNo(number), this)
   
   def sendToGate(number: Int): Unit = airport.sendToGate(airport.getGateNo(number), this)
+  
   
 }
 
