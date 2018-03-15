@@ -74,13 +74,13 @@ class Creator(fileName: String) {
   val queuesOnGround: Vector[LandQueue] = { 
     landQueuesData.map{
       data => 
-        new LandQueue(getRunway(data.get("number").get), data.get("capacity").get, data.get("number").get)   
+        new LandQueue(getRunway(data.get("runwayno").get), data.get("capacity").get, data.get("runwayno").get)   
       }.toVector }
       
   val queuesInAir: Vector[InAirQueue] = { 
     inAirQueuesData.map{
       data => 
-        new InAirQueue(data.get("altitude").get, 2, data.get("number").get.toInt)
+        new InAirQueue(data.get("altitude").get, 2, data.get("altitude").get.toInt)
       }.toVector
   }
  

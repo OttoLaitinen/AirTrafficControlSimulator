@@ -15,9 +15,9 @@
     "Gates" : 30,
     
     "LandQueues": [
-    	{"Runway": 1, "Capacity": 3},
-    	{"Runway": 2, "Capacity": 2},
-    	{"Runway": 3, "Capacity": 4}
+    	{"RunwayNo": 1, "Capacity": 3},
+    	{"RunwayNo": 2, "Capacity": 2},
+    	{"RunwayNo": 3, "Capacity": 4}
     ],
     
     "InAirQueues": [

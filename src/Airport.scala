@@ -1,17 +1,17 @@
 import scala.collection.mutable.Buffer
 
 class Airport(
-  title: String,
-  airportName: String,
-  country: String,
-  city: String,
-  description: String,
-  runways: Vector[Runway],
-  crossingRunways: Map[Runway, Vector[Runway]],
-  gates: Vector[Gate],
-  queuesOnGround: Vector[LandQueue],
-  queuesInAir: Vector[InAirQueue],
-  rushFactor: Double) {
+  val title: String,
+  val airportName: String,
+  val country: String,
+  val city: String,
+  val description: String,
+  val runways: Vector[Runway],
+  val crossingRunways: Map[Runway, Vector[Runway]],
+  val gates: Vector[Gate],
+  val queuesOnGround: Vector[LandQueue],
+  val queuesInAir: Vector[InAirQueue],
+  val rushFactor: Double) {
   
   /*Values and variables*/
   var time: Int = 0
