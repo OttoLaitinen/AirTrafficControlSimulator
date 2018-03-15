@@ -1,6 +1,11 @@
-import scala.collection.mutable._
+import scala.collection.mutable.Buffer
 
 class Airport(
+  title: String,
+  airportName: String,
+  country: String,
+  city: String,
+  description: String,
   runways: Vector[Runway],
   crossingRunways: Map[Runway, Vector[Runway]],
   gates: Vector[Gate],

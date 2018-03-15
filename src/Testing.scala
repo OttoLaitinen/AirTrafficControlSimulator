@@ -51,14 +51,14 @@ object Testing extends App {
   runWays.foreach {
     runway =>
       println("#" + runway.get("number").get.asInstanceOf[Double].toInt +
-        " // Length: " + runway.get("length").get.asInstanceOf[Double] +
+        " // Length: " + runway.get("length").get.asInstanceOf[Double].toInt +
         " // Crossing runways " + runway.get("crosses").get.asInstanceOf[List[Double]].map(_.toInt))
   }
   
   println("\n" + "Number of gates: " + gates + "\n")
   
   println("Queues on land:")
-  landQueues.foreach(queue =>println("A queue for runway number: " + queue.get("runway").get))
+  landQueues.foreach(queue =>println("A queue for runway number: " + queue.get("runway").get + ". With capacity of " + queue.get("capacity").get))
   println()
   println("Queues in air:")
   inAirQueues.foreach(queue =>println("A queue in altitude of " + queue.get("altitude").get))
