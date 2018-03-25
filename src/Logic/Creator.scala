@@ -1,3 +1,5 @@
+package Logic
+
 import scala.util.parsing.json._
 import scala.collection.mutable.Buffer
 import scala.util.Random

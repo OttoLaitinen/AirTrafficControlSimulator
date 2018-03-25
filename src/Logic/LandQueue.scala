@@ -1,4 +1,4 @@
-
+package Logic
 
 class LandQueue(val runway: Runway,val c: Int, val idN: Int) extends Queue(c, idN){
   

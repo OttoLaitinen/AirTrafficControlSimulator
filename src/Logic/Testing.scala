@@ -1,3 +1,5 @@
+package Logic
+
 import scala.util.parsing.json._
 
 object Testing extends App {

@@ -1,3 +1,5 @@
+package Logic
+
 import scala.collection.mutable.Buffer
 import scala.util.Random
 

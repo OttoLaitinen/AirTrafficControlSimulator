@@ -1,4 +1,4 @@
-
+package Logic
 
 class InAirQueue(val altitude: Double, val c: Int, val idN: Int) extends Queue(c, idN) {
 
