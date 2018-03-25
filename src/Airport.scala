@@ -1,6 +1,8 @@
 import scala.collection.mutable.Buffer
+import scala.util.Random
 
 class Airport(
+  creator: Creator,
   val title: String,
   val airportName: String,
   val country: String,
@@ -16,6 +18,7 @@ class Airport(
   /*Values and variables*/
   var time: Int = 0
   val planes: Buffer[Airplane] = Buffer[Airplane]()
+  val random = new Random()
 
   /*Functions*/
   private def checkPlanes: Unit = ???
@@ -26,9 +29,17 @@ class Airport(
 
   def descendPlane(runway: Runway, plane: Airplane): Unit = ???
 
-  private def createPlane: Unit = ???
+  private def createPlane: Unit = {
+    if(random.nextFloat() < rushFactor) {
+      planes.+=(creator.createAirplane(this))
+    }
+  }
 
-  private def onTick(): Unit = ???
+  def onTick(): Unit = {
+    createPlane
+    //checkPlanes
+    //checkRunways
+  }
 
   def ascendPlanesInQueues(runway: Runway): Unit = ???
 
@@ -36,11 +47,15 @@ class Airport(
   
   def sendToQueue(queue: Queue, plane: Airplane): Unit = ???
   
-  def getRunwayNo(runwayNo: Int): Runway = ???
+  def getRunwayNo(runwayNo: Int): Runway = {
+    runways.map(runway => runway.number -> runway).toMap.get(runwayNo).get //TODO Lisää THROW ERROR!
+  }
   
   def getQueueNo(number: Int): Queue = ???
   
   def getGateNo(number: Int): Gate = ???
+  
+  def getMaxRWLength: Int = 1000 //TODO
 
   /*Miten teen tuon onTick metodin timerin?? Pitää varmaankin myös kehittää testiluokka/vast
    *Jolla ohjelmaa pystyy ajamaan ilman käyttöliittymää */

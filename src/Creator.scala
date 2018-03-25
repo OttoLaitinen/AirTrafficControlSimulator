@@ -1,5 +1,6 @@
 import scala.util.parsing.json._
 import scala.collection.mutable.Buffer
+import scala.util.Random
 
 class Creator(fileName: String) {
 
@@ -49,12 +50,11 @@ class Creator(fileName: String) {
         parsedMap.get("length").get.asInstanceOf[Double].toInt,
         parsedMap.get("number").get.asInstanceOf[Double].toInt)
   }.toVector
-  
+
   def getRunway(number: Int): Runway = {
     val runwayMap = runways.map(runway => runway.number -> runway).toMap //Helps with finding the Runway with its number only
     runwayMap.get(number).get //TODO Needs to send an error if no corresponding runway is found
   }
-  
 
   val crossingRunways: Map[Runway, Vector[Runway]] = runwaysData.map { //(Runway, Vector[Runway]).toMap
     parsedMap =>
@@ -62,7 +62,7 @@ class Creator(fileName: String) {
         getRunway(parsedMap.get("number").get.asInstanceOf[Double].toInt),
         parsedMap.get("crosses").get.asInstanceOf[List[Double]].map(_.toInt).map(getRunway(_)).toVector)
   }.toMap
-  
+
   val gates: Vector[Gate] = {
     var gateBuffer = Buffer[Gate]()
     for (i <- 1 to gatesAmount) {
@@ -70,26 +70,67 @@ class Creator(fileName: String) {
     }
     gateBuffer.toVector
   }
-  
-  val queuesOnGround: Vector[LandQueue] = { 
-    landQueuesData.map{
-      data => 
-        new LandQueue(getRunway(data.get("runwayno").get), data.get("capacity").get, data.get("runwayno").get)   
-      }.toVector }
-      
-  val queuesInAir: Vector[InAirQueue] = { 
-    inAirQueuesData.map{
-      data => 
-        new InAirQueue(data.get("altitude").get, 2, data.get("altitude").get.toInt)
-      }.toVector
+
+  val queuesOnGround: Vector[LandQueue] = {
+    landQueuesData.map {
+      data =>
+        new LandQueue(getRunway(data.get("runwayno").get), data.get("capacity").get, data.get("runwayno").get)
+    }.toVector
   }
- 
+
+  val queuesInAir: Vector[InAirQueue] = {
+    inAirQueuesData.map {
+      data =>
+        new InAirQueue(data.get("altitude").get, 2, data.get("altitude").get.toInt)
+    }.toVector
+  }
 
   /////////////////////////////////*PARSER ENDS HERE*//////////////////////////////////////////
+  val radarTime: Int = 20 //How many minutes before the plane is shown in the airport's system.
+  def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
+    crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
 
-  def createAirport: Airport = new Airport(gameTitle, airportName, country, city, description, runways, 
-                                           crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
+  def createAirplane(airport: Airport): Airplane = {
+    val rndm = new Random()
 
-  def createAirplane: Airplane = ???
+    /*Necessary values for creating the airplane*/
+    val airline: String = "Finnair"
+    val fuelCapacity: Int = 80000 + rndm.nextInt(50) * 1000 //Litres
+    val fuelConsumption: Int = 70 + rndm.nextInt(40) //Liters / minute
+    val altitude: Int = rndm.nextInt(7) * 1000 + 8000
+    val passengers: Int = 25 + rndm.nextInt(300)
+    val totalCargoWeigth: Int = passengers * 80 //Kilograms
+    val minRunwayLength: Int = airport.getMaxRWLength
+    
+    /*Plane is created without any flights assigned*/
+    val newPlane = new Airplane(airport, airline, fuelCapacity, fuelConsumption, altitude,
+      totalCargoWeigth, minRunwayLength, passengers, None, None)
+    
+    /*Flights are generated*/
+    val currentFlight: Option[Flight] = Some(createFlight(newPlane))
+    val nextFlight: Option[Flight] = None //TODO nextFlight mechanism
+    
+     /*The new airplane is updated with the ne flights*/
+    newPlane.currentFlight = currentFlight
+    newPlane.nextFlight = nextFlight    
+    newPlane.setFlightTime(currentFlight.get.flightTime - radarTime)
+    
+    /*Return*/
+    newPlane
+  }
+
+  private def createFlight(airplane: Airplane): Flight = {
+    val rndm = new Random()
+    
+    /*Necessary values*/
+    val destination: String = "Heathrow" 
+    val departure: String = "Helsinki"
+    val shortForm: String = "LON123"
+    val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
+    var completion = 0
+    
+    new Flight(destination, departure, shortForm, flightTime, airplane, completion)
+
+  }
 
 }

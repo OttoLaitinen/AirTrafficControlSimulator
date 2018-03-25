@@ -8,6 +8,6 @@ class Flight(
   val plane: Airplane,
   var completion: Double) {
 
-  
+  override def toString = shortForm
   
 }

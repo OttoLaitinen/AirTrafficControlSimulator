@@ -37,6 +37,27 @@ object Testing extends App {
   airport.queuesInAir.foreach(queue =>println("A queue in altitude of " + queue.altitude))
   
   println()
+
   println("////////////// THE TEST ENDS HERE ////////////////")
+  
+  println()
+  
+  println("////////////// TEST FOR createAirplane STARTS /////////")
+  
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+    airport.onTick()
+        
+    airport.planes.foreach(println(_))
+  
+   println("////////////// TEST FOR createAirplane ENDS /////////")
 
 }
