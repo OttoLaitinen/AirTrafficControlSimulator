@@ -14,12 +14,12 @@ class Airplane(
   
   /*Additional values and variables*/
   var fuel = fuelCapacity //mahdollisesti minus joku luku mut meh... //liters
-  
+  var isInAir = true
   var timeToDestination = 0
   
   
   /*Functions*/
-  def changeAltitude(newAltitude: Int): Unit = altitude = newAltitude
+  def changeAltitude(newAltitude: Int): Unit = altitude = newAltitude //TODO Haluan että tää menee grauduaalisti eikä välittömästi eli tarvitaan "tavoiteAltitude"
   
   def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this)
   
@@ -38,8 +38,8 @@ class Airplane(
   }
   
   override def toString = {
-    "Airline: " + airline + " || Altitude: " + altitude + " || Passengers: " + passengers + " || Current Flight Completion: " + 
-     currentFlight.get.completion + " || Fuel Capacity: " + fuelCapacity + " || fuelConsumption: " + fuelConsumption +  "."
+    "Airline: " + airline + " || Altitude: " + altitude + " || Passengers: " + passengers /*+ " || Current Flight Completion: " + 
+     currentFlight.get.completion + " || Fuel Capacity: " + fuelCapacity + " || fuelConsumption: " + fuelConsumption +  "."*/
   }
   
   

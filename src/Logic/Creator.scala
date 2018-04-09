@@ -88,6 +88,7 @@ class Creator(fileName: String) {
   }
 
   /////////////////////////////////*PARSER ENDS HERE*//////////////////////////////////////////
+  
   val radarTime: Int = 20 //How many minutes before the plane is shown in the airport's system.
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
     crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
