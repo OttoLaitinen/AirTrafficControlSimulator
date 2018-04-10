@@ -11,38 +11,40 @@ class Airplane(
   var passengers: Int,
   var currentFlight: Option[Flight],
   var nextFlight: Option[Flight]) {
-  
+
   /*Additional values and variables*/
+
   var fuel = fuelCapacity //mahdollisesti minus joku luku mut meh... //liters
+  
+  
+  var wantedAltitude = altitude
+
   var isInAir = true
-  var timeToDestination = 0
   
-  
+
   /*Functions*/
-  def changeAltitude(newAltitude: Int): Unit = altitude = newAltitude //TODO Haluan että tää menee grauduaalisti eikä välittömästi eli tarvitaan "tavoiteAltitude"
-  
+  def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
+
+  def moveAirplane: Unit = if (wantedAltitude - altitude < 0) altitude -= 5 else if (wantedAltitude - altitude > 0) altitude += 5
+
   def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this)
-  
+
   def descend(runwayNo: Int): Unit = airport.descendPlane(airport.getRunwayNo(runwayNo), this)
-  
+
   def sendToQueue(number: Int): Unit = airport.sendToQueue(airport.getQueueNo(number), this)
-  
+
   def sendToGate(number: Int): Unit = airport.sendToGate(airport.getGateNo(number), this)
   
-  def setFlightTime(time: Int) = {
-    timeToDestination = time
-    if(currentFlight.isDefined) {
-      currentFlight.get.completion = BigDecimal(1 -(timeToDestination.toDouble / currentFlight.get.flightTime))
-                                     .setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
-    }
-  }
+  def timeToDestination: Int = if (currentFlight.isDefined) math.max(currentFlight.get.timeToDestination, 0) else 0
+
   
+  def isChangingAlt: Boolean = wantedAltitude != altitude
+
   override def toString = {
-    "Airline: " + airline + " || Altitude: " + altitude + " || Passengers: " + passengers /*+ " || Current Flight Completion: " + 
-     currentFlight.get.completion + " || Fuel Capacity: " + fuelCapacity + " || fuelConsumption: " + fuelConsumption +  "."*/
+    "Airline: " + airline + " || Altitude: " + altitude + " || Passengers: " + passengers + "\n" +" || Time to destination: " +
+     timeToDestination /*+ " || Fuel Capacity: " + fuelCapacity + " || fuelConsumption: " + fuelConsumption +  "."*/
   }
-  
-  
+
 }
 
 

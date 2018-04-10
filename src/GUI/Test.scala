@@ -52,14 +52,17 @@ object Test extends SimpleSwingApplication {
 
         /*Airport updates on every tick*/
         airport.onTick()
+        
 
         /*This is the panel for planes*/
-        val planesSorted = airport.planes.sortBy(_.currentFlight.get.completion)
-        if (airport.tick % 50 == 0) {
+        val planesSorted = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
+        
+        if (airport.tick % 20 == 0) {
+          
           airplanePanel.contents.clear()
 
           planesSorted.foreach(plane => airplanePanel.contents.+=:(new airplaneTextArea(plane) {
-
+            
             val planePopup = new PopupMenu {
               if (airplane.isInAir) {
                 //TODO Missä vaiheessa asioita ei voi enää muuttaa ja miten rajoitetaan
@@ -93,7 +96,10 @@ object Test extends SimpleSwingApplication {
 
             listenTo(mouse.clicks)
             reactions += {
-              case MouseClicked(_, p, _, _, _) => planePopup.show(this, p.x, p.y)
+              case MouseClicked(_, p, _, _, _) => {
+                planePopup.show(this, p.x, p.y)
+                
+              }
             }
           }))
 
@@ -110,10 +116,15 @@ object Test extends SimpleSwingApplication {
 class airplaneTextArea(val airplane: Airplane) extends TextArea {
   editable = false
   text = airplane.toString() + "\n"
-  maximumSize_=(new Dimension(500, 30))
-  minimumSize_=(new Dimension(500, 30))
+  maximumSize_=(new Dimension(500, 33))
+  minimumSize_=(new Dimension(500, 33))
   border = Swing.LineBorder(Color.BLACK)
-  background = Color.red
+  if (airplane.isChangingAlt) {    
+    background = Color.YELLOW
+  }
+  else if (airplane.timeToDestination < 30) background = Color.GREEN
+  else background = Color.RED
+  
 }
 
 

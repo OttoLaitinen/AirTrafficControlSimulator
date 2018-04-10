@@ -24,7 +24,15 @@ class Airport(
   val random = new Random()
 
   /*Functions*/
-  private def checkPlanes: Unit = ???
+  private def updatePlanes: Unit = {
+    if (tick % 50 == 0) {
+      time += 1
+      createPlane
+      planes.foreach(_.currentFlight.get.update)
+    }
+    planes.foreach(_.moveAirplane)
+
+  }
 
   private def checkRunways: Unit = ???
 
@@ -40,12 +48,7 @@ class Airport(
 
   def onTick(): Unit = {
     tick += 1
-    if (tick % 50 == 0) {
-      time += 1
-      createPlane
-    }
-      
-    //checkPlanes
+    updatePlanes
     //checkRunways
 
   }

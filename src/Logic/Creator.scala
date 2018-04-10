@@ -113,10 +113,9 @@ class Creator(fileName: String) {
     val currentFlight: Option[Flight] = Some(createFlight(newPlane))
     val nextFlight: Option[Flight] = None //TODO nextFlight mechanism
     
-     /*The new airplane is updated with the ne flights*/
+     /*The new airplane is updated with the new flights*/
     newPlane.currentFlight = currentFlight
     newPlane.nextFlight = nextFlight    
-    newPlane.setFlightTime(currentFlight.get.flightTime - radarTime)
     
     /*Return*/
     newPlane
@@ -126,13 +125,13 @@ class Creator(fileName: String) {
     val rndm = new Random()
     
     /*Necessary values*/
-    val destination: String = "Heathrow" 
+    val destination: String = "Heathrow" //TODO koko randomisaatio tässä osassa
     val departure: String = "Helsinki"
     val shortForm: String = "LON123"
     val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
-    var completion = 0
+   
     
-    new Flight(destination, departure, shortForm, flightTime, airplane, completion)
+    new Flight(destination, departure, shortForm, flightTime, airplane)
 
   }
 
