@@ -38,7 +38,7 @@ class Airport(
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
 
-  def descendPlane(runway: Runway, plane: Airplane): Unit = ???
+  def descendPlane(runway: Runway, plane: Airplane): Unit = runway.reserve(plane)
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
