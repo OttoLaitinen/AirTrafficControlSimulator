@@ -17,9 +17,9 @@ import javax.swing.JFrame
 import javax.swing.plaf.metal.MetalBorders.QuestionDialogBorder
 
 object Test extends SimpleSwingApplication {
-  val width = 1920
+  val width = 1700
   val height = 300
-  val fullHeight = 1080
+  val fullHeight = 900
 
   /*Setting up the program */
   val creator: Creator = new Creator("Config/test.json")
@@ -28,25 +28,52 @@ object Test extends SimpleSwingApplication {
 
   ////////////////////*GUI elements*/////////////////////////
   val airplanePanel = new BoxPanel(Orientation.Vertical) {
-
+    border = Swing.LineBorder(Color.BLACK)
+    background = Color.lightGray
   }
   val planeScroller = new ScrollPane {
     contents_=(airplanePanel)
+    horizontalScrollBarPolicy_=(ScrollPane.BarPolicy.Never)
+    verticalScrollBarPolicy_=(ScrollPane.BarPolicy.AsNeeded)
     preferredSize = (new Dimension(500, 500))
+    //viewportView_=(airplanePanel)
 
   }
 
   val runwayPanel = new BoxPanel(Orientation.Vertical) {
     airport.runways.foreach(contents += new RunwayTextArea(_, airport))
-
+    background = Color.gray
   }
   val runwayScroller = new ScrollPane {
     contents_=(runwayPanel)
-    preferredSize = (new Dimension(500, 500))
+    preferredSize = (new Dimension(500, airplanePanel.preferredSize.height / 2))
 
   }
+
+  val refresh = new Button {
+    text = "Refresh airplanelist"
+    listenTo(mouse.clicks)
+    reactions += {
+      case MouseClicked(_, p, _, _, _) => {
+        planeScroller.revalidate()
+        println("LOL")
+      }
+    }
+  }
+
+  val airplaneInfo = new TabbedPane {
+    preferredSize = (new Dimension(500, fullHeight))
+    pages.+=(new scala.swing.TabbedPane.Page("Closest Planes", airplanePanel))
+  }
+  
+  val groundObjects = new TabbedPane {
+    preferredSize_=(new Dimension(500, airplaneInfo.preferredSize.height / 2))
+    pages.+=(new scala.swing.TabbedPane.Page("Runways", runwayScroller))
+    pages.+=(new scala.swing.TabbedPane.Page("Gates", new TextArea))
+    pages.+=(new scala.swing.TabbedPane.Page("Queues", new TextArea))
+  }
   val mainPanel = new GridBagPanel {
-    preferredSize = (new Dimension(1700, 1000))
+    preferredSize = (new Dimension(width, height))
 
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
@@ -62,8 +89,9 @@ object Test extends SimpleSwingApplication {
       c.fill = fill
       c
     }
-    add(planeScroller, constraints(0, 0))
-    add(runwayScroller, constraints(1, 0))
+    add(airplaneInfo, constraints(0, 0, gridheight = 2, fill = GridBagPanel.Fill.Vertical))
+    add(groundObjects, constraints(1, 0))
+    add(refresh, constraints(1, 1))
   }
 
   ///////////////////////////////////////////////////////////
@@ -82,12 +110,10 @@ object Test extends SimpleSwingApplication {
     val listener = new ActionListener() {
       def actionPerformed(e: java.awt.event.ActionEvent) = {
 
-        
-
         /*Airport updates on every tick*/
         airport.onTick()
+
         runwayPanel.contents.foreach(_.asInstanceOf[RunwayTextArea].updateText)
-        airplanePanel.contents.foreach(_.asInstanceOf[AirplaneTextArea].update)
 
         /*These tasks are done only every 20 ticks meaning every 400ms*/
         if (airport.tick % 20 == 0) {
@@ -95,11 +121,11 @@ object Test extends SimpleSwingApplication {
           /*Planes are sorted by their distance from the airport
            * All textareas are remade on every update.*/
 
-          airplanePanel.contents.clear()
-
           val planesSorted = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
+          airplanePanel.contents.clear()
           planesSorted.foreach(plane => airplanePanel.contents.+=:(new AirplaneTextArea(plane, airport)))
-          planeScroller.contents_=(airplanePanel)
+          //airplanePanel.preferredSize_=(new Dimension(500, contents.length * 33))
+          airplanePanel.revalidate()
 
         }
 
@@ -115,18 +141,15 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Tex
 
   editable = false
 
-  maximumSize_=(new Dimension(500, 33))
-  minimumSize_=(new Dimension(500, 33))
+  maximumSize_=(new Dimension(500, 66))
+  minimumSize_=(new Dimension(500, 66))
+  preferredSize = (new Dimension(500, 66))
   border = Swing.LineBorder(Color.BLACK)
-
-  def update: Unit = {
-    if (airplane.isChangingAlt) {
-      background = Color.YELLOW
-    } else if (airplane.timeToDestination < 30) background = Color.RED
-    else background = Color.GREEN
-    text = airplane.toString() + "\n"
-    repaint()
-  }
+  if (airplane.isChangingAlt) {
+    background = Color.YELLOW
+  } else if (airplane.timeToDestination < airport.descendTime) background = Color.RED
+  else background = Color.GREEN
+  text = airplane.toString() + "\n"
 
   val planePopup = new AirplanePopup(airplane, airport)
 
@@ -142,8 +165,8 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Tex
 
 class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
   editable = false
-  maximumSize_=(new Dimension(500, 33))
-  minimumSize_=(new Dimension(500, 33))
+  maximumSize_=(new Dimension(500, 66))
+  minimumSize_=(new Dimension(500, 66))
   border = Swing.LineBorder(Color.BLACK)
 
   def updateText: Unit = {

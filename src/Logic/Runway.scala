@@ -12,11 +12,13 @@ class Runway(
   def unreserve(): Unit = currentPlane = None
   
   override def toString: String = {
-    if(currentPlane.isDefined) "Number: " + number + " || " + "Length: " + length + "m" + " || " + "\n" + 
-    "Currently Occupied by: " + currentPlane.get.currentFlight.get.shortForm +" || Time to destination: " + currentPlane.get.timeToDestination
+   var basic =  "NUMBER: " + number + "\n" + "Length: " + length + "m" + " || " + "Condition: " + condition + "%" + "\n"
     
-    else "Number: " + number + " || " + "Length: " + length + "m" + " || " + "\n" + "Currently Occupied by: " + currentPlane
+    if (currentPlane.isDefined) basic = basic + "Currently Occupied by: " + currentPlane.get.currentFlight.get.shortForm +" || Time to destination: "  + currentPlane.get.timeToDestination
+    else basic = basic + "Not occupied at the moment"
     
+    basic
+
   }
   
   def clean: Unit = ???

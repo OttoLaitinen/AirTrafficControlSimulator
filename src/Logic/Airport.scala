@@ -22,6 +22,7 @@ class Airport(
   var tick: Int = 0
   val planes: Buffer[Airplane] = Buffer[Airplane]()
   val random = new Random()
+  val descendTime = 30
 
   /*Functions*/
   private def updatePlanes: Unit = {
@@ -30,7 +31,8 @@ class Airport(
       createPlane
       planes.foreach(_.currentFlight.get.update)
     }
-    planes.foreach(_.moveAirplane)
+    
+    planes.foreach(_.checkAirplane)
 
   }
 
@@ -38,7 +40,10 @@ class Airport(
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
 
-  def descendPlane(runway: Runway, plane: Airplane): Unit = runway.reserve(plane)
+  def descendPlane(runway: Runway, plane: Airplane): Unit = {
+    plane.descendRunway = Some(runway)
+    
+  }
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
