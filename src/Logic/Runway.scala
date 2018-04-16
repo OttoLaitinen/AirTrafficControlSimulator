@@ -12,7 +12,8 @@ class Runway(
   def unreserve(): Unit = currentPlane = None
   
   override def toString: String = {
-   var basic =  "NUMBER: " + number + "\n" + "Length: " + length + "m" + " || " + "Condition: " + condition + "%" + "\n"
+   var basic =  "NUMBER: " + number + "\n" + "\n" + 
+   "Length: " + length + "m" + " || " + "Condition: " + condition + "%" + "\n"
     
     if (currentPlane.isDefined) basic = basic + "Currently Occupied by: " + currentPlane.get.currentFlight.get.shortForm +" || Time to destination: "  + currentPlane.get.timeToDestination
     else basic = basic + "Not occupied at the moment"

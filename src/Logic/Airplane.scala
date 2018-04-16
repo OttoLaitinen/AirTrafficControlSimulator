@@ -14,7 +14,7 @@ class Airplane(
 
   /*Additional values and variables*/
 
-  var fuel = fuelCapacity //mahdollisesti minus joku luku mut meh... //liters
+  var fuel: Int = fuelCapacity //mahdollisesti minus joku luku mut meh... //liters
 
   var wantedAltitude = altitude
   var isInAir = true
@@ -27,6 +27,7 @@ class Airplane(
 
   def checkAirplane: Unit = {
     moveAirplane
+    fuelOperations
     descendingOperations
   }
 
@@ -50,13 +51,23 @@ class Airplane(
       isInAir = false
     }
   }
+  
+  def fuelOperations: Unit = {
+    if (airport.tick % 50 == 0 && isInAir) {
+      fuel = fuel - fuelConsumption.toInt
+    }
+  }
 
   def isChangingAlt: Boolean = wantedAltitude != altitude
 
   override def toString = {
-    "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline +"\n" +
-     "Altitude: " + altitude + " || Passengers: " + passengers + " || Time to destination: " + timeToDestination + "\n" + 
-     "Fuel Capacity: " + fuelCapacity + " || fuelConsumption: " + fuelConsumption
+    var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline +"\n" + "\n" +
+     "Altitude: " + altitude + "m || Passengers: " + passengers  + " || Minimum Runway Length: " + minRunwaylength + "m" +"\n" + 
+     "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
+     
+     if(descendRunway.isDefined) basic += "LANDING RUNWAY: #" + descendRunway.get.number + " || Landing starts in " + math.max(this.timeToDestination - 10, 0) + "minutes"
+     
+     basic
   }
 
 }
