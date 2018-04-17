@@ -44,10 +44,11 @@ class Airplane(
   def descendingOperations: Unit = {
     if (this.timeToDestination < 30 && altitude > 1500 && descendRunway.isDefined) {
       changeAltitude(1500)
-    } else if (this.timeToDestination < 10 && descendRunway.isDefined) {
+    } else if (this.timeToDestination < 10 && this.timeToDestination > 0 && descendRunway.isDefined) {
       descendRunway.get.reserve(this)
       changeAltitude(0)
     } else if (this.timeToDestination == 0 && altitude == 0) {
+      println("WE here")
       isInAir = false
     }
   }

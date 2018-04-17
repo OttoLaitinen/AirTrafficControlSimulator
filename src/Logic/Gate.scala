@@ -11,4 +11,12 @@ class Gate(
 
   def unreserve(): Unit = currentPlane = None
   
+  override def toString() = {
+    var basic =  "NUMBER: " + number + "\n" 
+    if(currentPlane.isDefined) basic += "Occupied by: " + currentPlane.get.currentFlight.get.shortForm + "."
+    else basic += "Currently not occupied."
+    
+    basic
+  }
+  
 }

@@ -36,7 +36,6 @@ object Test extends SimpleSwingApplication {
       this.contents.clear()
       val planesSorted = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
       planesSorted.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
-      //airplanePanel.preferredSize_=(new Dimension(500, contents.length * 33))
       this.revalidate()
     }
   }
@@ -66,8 +65,13 @@ object Test extends SimpleSwingApplication {
   }
   val runwayScroller = new ScrollPane {
     contents_=(runwayPanel)
-
   }
+
+  val gatePanel = new BoxPanel(Orientation.Vertical) {
+    airport.gates.foreach(contents += new GateTextArea(_, airport))
+    background = Color.gray
+  }
+  val gateScroller = new ScrollPane { contents_=(gatePanel) }
 
   val refresh = new Button {
     text = "Refresh airplanelist"
@@ -89,12 +93,11 @@ object Test extends SimpleSwingApplication {
   val groundObjects = new TabbedPane {
     preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
     pages.+=(new scala.swing.TabbedPane.Page("Runways", runwayScroller))
-    pages.+=(new scala.swing.TabbedPane.Page("Gates", new TextArea))
+    pages.+=(new scala.swing.TabbedPane.Page("Gates", gateScroller))
     pages.+=(new scala.swing.TabbedPane.Page("Queues", new TextArea))
   }
   val mainPanel = new GridBagPanel {
     preferredSize = (new Dimension(width, fullHeight))
-
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
       weightx: Double = 0.0, weighty: Double = 0.0,
@@ -134,11 +137,13 @@ object Test extends SimpleSwingApplication {
         airport.onTick()
 
         runwayPanel.contents.foreach(_.asInstanceOf[RunwayTextArea].updateText)
-
+        gatePanel.contents.foreach(_.asInstanceOf[GateTextArea].updateText)
+        
         /*These tasks are done only every 20 ticks meaning every 400ms*/
         if (airport.tick % 20 == 0) {
           closestAirplanes.update
           newAirplanes.update
+          
         }
 
       }
@@ -149,79 +154,10 @@ object Test extends SimpleSwingApplication {
   }
 }
 
-class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends EditorPane {
-  val textAreaWidth = 500
-  val textAreaHeight = 80
 
-  editable = false
-  maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
-  minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
-  preferredSize = (new Dimension(textAreaWidth, textAreaHeight))
-  border = Swing.LineBorder(Color.BLACK)
-  
-  if (airplane.altitude == 0 && airplane.timeToDestination == 0)background = Color.WHITE
-  else if (airplane.isChangingAlt || (airplane.descendRunway.isDefined && airplane.timeToDestination < 30))  background = Color.YELLOW 
-  else if (airplane.timeToDestination < airport.descendTime) background = Color.RED
-  else background = Color.GREEN
-  
-  text = airplane.toString() + "\n"
-  font = new Font("Courier New", Font.BOLD , 12)
-  
-  val planePopup = new AirplanePopup(airplane, airport)
 
-  listenTo(mouse.clicks)
-  reactions += {
-    case MouseClicked(_, p, _, _, _) => {
-      planePopup.show(this, p.x, p.y)
 
-    }
-  }
 
-}
 
-class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
-  val textAreaWidth = 500
-  val textAreaHeight = 80
-  
-  editable = false
-  maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
-  minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
-  border = Swing.LineBorder(Color.BLACK)
- 
-  font = new Font("Courier New", Font.BOLD , 12)
-  def updateText: Unit = {
-    text = runway.toString()
-    repaint()
-  }
-}
-
-class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupMenu {
-  val dialogFrame = new JFrame()
-  if (airplane.isInAir) {
-    //TODO Missä vaiheessa asioita ei voi enää muuttaa ja miten rajoitetaan
-    contents += new MenuItem(new Action("Descend") {
-      def apply() = {
-        val possibilities: Array[Object] = airport.runways.map(_.number.toString()).toArray
-        val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Pick a runway.", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
-        val number = Integer.parseInt(numberAsString)
-        airplane.descend(number)
-      }
-
-    })
-    contents += new MenuItem(new Action("Change altitude") {
-      def apply() = {
-        val possibilities: Array[Object] = (1000 to 15000 by 500).toArray.map(_.toString())
-        val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Write the altitude between 1000 and 15000:", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
-
-        val number = Integer.parseInt(numberAsString)
-        airplane.changeAltitude(number)
-      }
-    })
-  } else {
-    contents += new MenuItem(new Action("Kokeilu") { def apply() = println(airplane) })
-  }
-  contents += new MenuItem(new Action("Kokeilu") { def apply() = println(airplane) })
-  contents += new MenuItem(new Action("Testi") { def apply() = println(airplane) })
-}
 
 
