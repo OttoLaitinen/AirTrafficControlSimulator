@@ -20,6 +20,7 @@ import scala.swing.Action
 
 class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupMenu {
   val dialogFrame = new JFrame()
+
   if (airplane.isInAir) {
     //TODO Missä vaiheessa asioita ei voi enää muuttaa ja miten rajoitetaan
     contents += new MenuItem(new Action("Descend") {
@@ -40,8 +41,19 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
         airplane.changeAltitude(number)
       }
     })
-  } else {
-    contents += new MenuItem(new Action("Kokeilu") { def apply() = println(airplane) })
+  } else if (!airplane.isInAir && airplane.timeToDestination <= 0) {
+    contents += new MenuItem(new Action("Send to gate") {
+      def apply() = {
+        val possibilities: Array[Object] = (airport.getFreeGates.map(_.number)).toArray.map(_.toString())
+        
+        if (!possibilities.isEmpty) {
+          val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Pick a free gate", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
+          val number = Integer.parseInt(numberAsString)
+          airplane.sendToGate(number)
+        }
+        else JOptionPane.showMessageDialog(dialogFrame, "There is no free gates available", "Problem", JOptionPane.ERROR_MESSAGE, icon)
+      }
+    })
   }
   contents += new MenuItem(new Action("Kokeilu") { def apply() = println(airplane) })
   contents += new MenuItem(new Action("Testi") { def apply() = println(airplane) })

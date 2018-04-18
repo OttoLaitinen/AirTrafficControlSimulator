@@ -31,7 +31,7 @@ class Airport(
       createPlane
       planes.foreach(_.currentFlight.get.update)
     }
-    
+
     planes.foreach(_.checkAirplane)
 
   }
@@ -40,10 +40,10 @@ class Airport(
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
 
-  def descendPlane(runway: Runway, plane: Airplane): Unit = {
-    plane.descendRunway = Some(runway)
-    
-  }
+//  def descendPlane(runway: Runway, airplane: Airplane): Unit = {
+//    airplane.descendRunway = Some(runway)
+//
+//  }
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
@@ -60,23 +60,27 @@ class Airport(
 
   def ascendPlanesInQueues(runway: Runway): Unit = ???
 
-  def sendToGate(gate: Gate, plane: Airplane): Unit = ???
+//  def sendToGate(gate: Gate, airplane: Airplane): Unit = {
+//    gate.reserve(airplane) //TODO Mitä jos jo varattu
+//  }
 
-  def sendToQueue(queue: Queue, plane: Airplane): Unit = ???
+  def sendToQueue(queue: Queue, airplane: Airplane): Unit = ???
 
   def getRunwayNo(runwayNo: Int): Runway = {
     runways.map(runway => runway.number -> runway).toMap.get(runwayNo).get //TODO Lisää THROW ERROR!
   }
+  def getPlanesAtGates: Vector[Airplane] = gates.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
+
+  def getPlanesOnRunways: Vector[Airplane] = runways.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
+  
+  def getFreeGates: Vector[Gate] = gates.filterNot(_.currentPlane.isDefined)
 
   def getQueueNo(number: Int): Queue = ???
 
-  def getGateNo(number: Int): Gate = ???
+  def getGateNo(number: Int): Gate = gates.map(gate => gate.number -> gate).toMap.get(number).get //TODO Lisää THROW ERROR!
+  
 
-  def getMaxRWLength: Int = {
-    runways.map(_.length).max
-  }
-
-  /*Miten teen tuon onTick metodin timerin?? Pitää varmaankin myös kehittää testiluokka/vast
-   *Jolla ohjelmaa pystyy ajamaan ilman käyttöliittymää */
+  def getMaxRWLength: Int =  runways.map(_.length).max
+  
 
 }

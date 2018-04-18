@@ -28,14 +28,16 @@ object Test extends SimpleSwingApplication {
   val airport = creator.createAirport
   var counter = 0
 
+  /*Methods*/
+  def planesSortedByTime = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
+
   ////////////////////*GUI elements*/////////////////////////
   val closestAirplanes = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
     background = Color.lightGray
     def update = {
       this.contents.clear()
-      val planesSorted = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
-      planesSorted.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
+      planesSortedByTime.filterNot(airport.getPlanesAtGates.contains(_)).filterNot(airport.getPlanesOnRunways.contains(_)).foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
       this.revalidate()
     }
   }
@@ -44,19 +46,19 @@ object Test extends SimpleSwingApplication {
     background = Color.lightGray
     def update = {
       this.contents.clear()
-      val planesSorted = airport.planes
-      planesSorted.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
-      //airplanePanel.preferredSize_=(new Dimension(500, contents.length * 33))
+      airport.planes.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
       this.revalidate()
     }
   }
-  val planeScroller = new ScrollPane {
-    contents_=(closestAirplanes)
-    horizontalScrollBarPolicy_=(ScrollPane.BarPolicy.Never)
-    verticalScrollBarPolicy_=(ScrollPane.BarPolicy.AsNeeded)
-    preferredSize = (new Dimension(textAreaWidth, 500))
-    //viewportView_=(airplanePanel)
-
+  
+  val airplanesOnRunways = new BoxPanel(Orientation.Vertical) {
+    border = Swing.LineBorder(Color.BLACK)
+    background = Color.lightGray
+    def update = {
+      this.contents.clear()
+      airport.getPlanesOnRunways.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
+      this.revalidate()
+    }
   }
 
   val runwayPanel = new BoxPanel(Orientation.Vertical) {
@@ -76,18 +78,13 @@ object Test extends SimpleSwingApplication {
   val refresh = new Button {
     text = "Refresh airplanelist"
     listenTo(mouse.clicks)
-    reactions += {
-      case MouseClicked(_, p, _, _, _) => {
-        planeScroller.revalidate()
-        println("LOL")
-      }
-    }
   }
 
   val airplaneInfo = new TabbedPane {
     preferredSize = (new Dimension(textAreaWidth, fullHeight - 10))
     pages.+=(new scala.swing.TabbedPane.Page("Closest Planes", closestAirplanes))
     pages.+=(new scala.swing.TabbedPane.Page("Newest Planes", newAirplanes))
+    pages.+=(new scala.swing.TabbedPane.Page("Planes On  Runways", airplanesOnRunways))
   }
 
   val groundObjects = new TabbedPane {
@@ -138,12 +135,13 @@ object Test extends SimpleSwingApplication {
 
         runwayPanel.contents.foreach(_.asInstanceOf[RunwayTextArea].updateText)
         gatePanel.contents.foreach(_.asInstanceOf[GateTextArea].updateText)
-        
+
         /*These tasks are done only every 20 ticks meaning every 400ms*/
         if (airport.tick % 20 == 0) {
           closestAirplanes.update
           newAirplanes.update
-          
+          airplanesOnRunways.update
+
         }
 
       }
