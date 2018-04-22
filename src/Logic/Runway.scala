@@ -7,7 +7,14 @@ class Runway(
   var condition: Double = 100.0,
   var currentPlane: Option[Airplane] = None) {
   
-  def reserve(airplane: Airplane): Unit = currentPlane = Some(airplane)
+  def reserve(airplane: Airplane): Unit = {
+    if (currentPlane.isEmpty) currentPlane = Some(airplane)
+    else {
+      println("You assigned two planes on the same runway (Runway: "+ number + ") and it caused a fatal crash.")
+      currentPlane.get.crash()
+      airplane.crash()
+    }
+  }
   
   def unreserve(): Unit = currentPlane = None
   

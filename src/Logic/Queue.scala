@@ -7,7 +7,10 @@ abstract class Queue(
   val idNumber: Int,
   val planes: Buffer[Airplane] = Buffer[Airplane]()) {
 
-  def addPlane(airplane: Airplane): Unit = planes.+=(airplane)
+  def addPlane(airplane: Airplane): Unit = {
+    if (planes.length < capacity) planes.+=(airplane)
+    else println("Throw an error here and catch it somewhere else")
+  }
 
   def removePlane(airplane: Airplane): Unit = planes.-=(airplane)
 

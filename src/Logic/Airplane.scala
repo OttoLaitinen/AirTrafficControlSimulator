@@ -20,7 +20,7 @@ class Airplane(
   var isInAir = true
   var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
 
-  /*Functions*/
+  /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
 
   def moveAirplane: Unit = if (wantedAltitude - altitude < 0) altitude -= 10 else if (wantedAltitude - altitude > 0) altitude += 10
@@ -37,6 +37,11 @@ class Airplane(
     descendRunway = Some(airport.getRunwayNo(runwayNo))
 
   }
+  
+  def crash(): Unit = {
+    println("Plane carrying flight " + currentFlight.get.shortForm + " has crashed")
+    airport.gameIsOn = false
+  }
 
   def sendToQueue(number: Int): Unit = airport.sendToQueue(airport.getQueueNo(number), this)
 
@@ -46,8 +51,6 @@ class Airplane(
       this.descendRunway
     }
     airport.getGateNo(number).reserve(this)
-
-    
   }
 
   def timeToDestination: Int = if (currentFlight.isDefined) math.max(currentFlight.get.timeToDestination, 0) else 0

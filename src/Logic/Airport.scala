@@ -20,6 +20,7 @@ class Airport(
   /*Values and variables*/
   var time: Int = 0
   var tick: Int = 0
+  var gameIsOn = true
   val planes: Buffer[Airplane] = Buffer[Airplane]()
   val random = new Random()
   val descendTime = 30
@@ -36,14 +37,11 @@ class Airport(
 
   }
 
-  private def checkRunways: Unit = ???
+  private def checkRunways: Unit = {
+    ???
+  }
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
-
-//  def descendPlane(runway: Runway, airplane: Airplane): Unit = {
-//    airplane.descendRunway = Some(runway)
-//
-//  }
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
@@ -60,11 +58,9 @@ class Airport(
 
   def ascendPlanesInQueues(runway: Runway): Unit = ???
 
-//  def sendToGate(gate: Gate, airplane: Airplane): Unit = {
-//    gate.reserve(airplane) //TODO Mitä jos jo varattu
-//  }
-
   def sendToQueue(queue: Queue, airplane: Airplane): Unit = ???
+
+  def getQueueNo(number: Int): Queue = ???
 
   def getRunwayNo(runwayNo: Int): Runway = {
     runways.map(runway => runway.number -> runway).toMap.get(runwayNo).get //TODO Lisää THROW ERROR!
@@ -72,15 +68,11 @@ class Airport(
   def getPlanesAtGates: Vector[Airplane] = gates.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
 
   def getPlanesOnRunways: Vector[Airplane] = runways.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
-  
+
   def getFreeGates: Vector[Gate] = gates.filterNot(_.currentPlane.isDefined)
 
-  def getQueueNo(number: Int): Queue = ???
-
   def getGateNo(number: Int): Gate = gates.map(gate => gate.number -> gate).toMap.get(number).get //TODO Lisää THROW ERROR!
-  
 
-  def getMaxRWLength: Int =  runways.map(_.length).max
-  
+  def getMaxRWLength: Int = runways.map(_.length).max
 
 }
