@@ -10,7 +10,7 @@ import java.awt.Color
 import scala.swing.event.MouseClicked
 
 class GateTextArea(val gate: Gate, val airport: Airport) extends TextArea {
-  val textAreaWidth = 500
+  val textAreaWidth = 600
   val textAreaHeight = 40
 
   editable = false

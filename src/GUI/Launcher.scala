@@ -21,7 +21,7 @@ object Test extends SimpleSwingApplication {
   val width = 1700
   val fullHeight = 900
   val textAreaHeight = 80
-  val textAreaWidth = 500
+  val textAreaWidth = 600
 
   /*Setting up the program */
   val creator: Creator = new Creator("Config/test.json")
@@ -41,6 +41,7 @@ object Test extends SimpleSwingApplication {
       planesSortedByTime.
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
+        filterNot(airport.getPlanesInQueues.contains(_)).
         foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
 
       this.revalidate()
@@ -55,6 +56,7 @@ object Test extends SimpleSwingApplication {
       airport.planes.
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
+        filterNot(airport.getPlanesInQueues.contains(_)).
         foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
 
       this.revalidate()
@@ -112,13 +114,14 @@ object Test extends SimpleSwingApplication {
     pages.+=(new scala.swing.TabbedPane.Page("Closest Planes", closestAirplanes))
     pages.+=(new scala.swing.TabbedPane.Page("Newest Planes", newAirplanes))
     pages.+=(new scala.swing.TabbedPane.Page("Planes On  Runways", airplanesOnRunways))
+    pages.+=(new scala.swing.TabbedPane.Page("Queues", airQueuePanel))
   }
 
   val groundObjects = new TabbedPane {
     preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
     pages.+=(new scala.swing.TabbedPane.Page("Runways", runwayScroller))
     pages.+=(new scala.swing.TabbedPane.Page("Gates", gateScroller))
-    pages.+=(new scala.swing.TabbedPane.Page("Queues", airQueuePanel))
+    
   }
   val mainPanel = new GridBagPanel {
     preferredSize = (new Dimension(width, fullHeight))

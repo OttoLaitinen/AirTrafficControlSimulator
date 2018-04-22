@@ -19,6 +19,7 @@ class Airplane(
   var wantedAltitude = altitude
   var isInAir = true
   var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
+  var goToInAirQueue: Option[InAirQueue] = None
 
   /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
@@ -28,12 +29,14 @@ class Airplane(
   def checkAirplane: Unit = {
     moveAirplane
     fuelOperations
-    descendingOperations
+    if (descendRunway.isDefined) descendingOperations
+    if (goToInAirQueue.isDefined) queueOperations
   }
 
   def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this)
 
   def descend(runwayNo: Int): Unit = {
+    goToInAirQueue = None
     descendRunway = Some(airport.getRunwayNo(runwayNo))
 
   }
@@ -43,7 +46,14 @@ class Airplane(
     airport.gameIsOn = false
   }
 
-  def sendToQueue(number: Int): Unit = airport.sendToQueue(airport.getQueueNo(number), this)
+  def sendToQueue(number: Int): Unit = {
+    descendRunway = None
+    val queue = airport.getQueueNo(number)
+    if (queue.isInstanceOf[InAirQueue]) goToInAirQueue = Some(queue.asInstanceOf[InAirQueue])
+    else ??? /*TODO Mitä tapahtuu kun kyseessä maajono*/
+    
+    //airport.sendToQueue(airport.getQueueNo(number), this)
+  }
 
   def sendToGate(number: Int): Unit = {
     if (this.descendRunway.isDefined) {
@@ -56,13 +66,19 @@ class Airplane(
   def timeToDestination: Int = if (currentFlight.isDefined) math.max(currentFlight.get.timeToDestination, 0) else 0
 
   def descendingOperations: Unit = {
-    if (this.timeToDestination < 30 && altitude > 1500 && descendRunway.isDefined) {
+    if (this.timeToDestination < 30 && altitude > 1500) {
       changeAltitude(1500)
-    } else if (this.timeToDestination < 10 && this.timeToDestination > 0 && descendRunway.isDefined) {
+    } else if (this.timeToDestination < 10 && this.timeToDestination > 0) {
       descendRunway.get.reserve(this)
       changeAltitude(0)
     } else if (this.timeToDestination == 0 && altitude == 0) {
       isInAir = false
+    }
+  }
+  
+  def queueOperations: Unit = {
+    if (this.timeToDestination < 30) {
+      /*TODO Vaihdetaan korkeus sopivaksi ja lisätään kone jonoon.*/ 
     }
   }
 

@@ -9,7 +9,7 @@ abstract class Queue(
 
   def addPlane(airplane: Airplane): Unit = {
     if (planes.length < capacity) planes.+=(airplane)
-    else println("Throw an error here and catch it somewhere else")
+    else ??? /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.*/
   }
 
   def removePlane(airplane: Airplane): Unit = planes.-=(airplane)

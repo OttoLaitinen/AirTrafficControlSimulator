@@ -9,7 +9,7 @@ import java.awt.Font
 import scala.swing.event.MouseClicked
 
 class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends EditorPane {
-  val textAreaWidth = 500
+  val textAreaWidth = 600
   val textAreaHeight = 80
 
   editable = false
