@@ -65,15 +65,18 @@ object Test extends SimpleSwingApplication {
     airport.runways.foreach(contents += new RunwayTextArea(_, airport))
     background = Color.gray
   }
-  val runwayScroller = new ScrollPane {
+  val runwayScroller = new ScrollPane {    
     contents_=(runwayPanel)
+    
   }
 
   val gatePanel = new BoxPanel(Orientation.Vertical) {
     airport.gates.foreach(contents += new GateTextArea(_, airport))
     background = Color.gray
   }
-  val gateScroller = new ScrollPane { contents_=(gatePanel) }
+  val gateScroller = new ScrollPane { 
+    verticalScrollBar.unitIncrement_=(14)
+    contents_=(gatePanel) }
 
   val refresh = new Button {
     text = "Refresh airplanelist"
@@ -135,6 +138,7 @@ object Test extends SimpleSwingApplication {
 
         runwayPanel.contents.foreach(_.asInstanceOf[RunwayTextArea].updateText)
         gatePanel.contents.foreach(_.asInstanceOf[GateTextArea].updateText)
+        
 
         /*These tasks are done only every 20 ticks meaning every 400ms*/
         if (airport.tick % 20 == 0) {

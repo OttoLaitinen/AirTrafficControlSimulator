@@ -1,4 +1,5 @@
 package GUI
+
 import Logic._
 import java.awt.event.ActionListener
 import scala.swing.SimpleSwingApplication

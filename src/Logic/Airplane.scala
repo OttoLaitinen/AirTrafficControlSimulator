@@ -35,7 +35,7 @@ class Airplane(
 
   def descend(runwayNo: Int): Unit = {
     descendRunway = Some(airport.getRunwayNo(runwayNo))
-//    airport.descendPlane(airport.getRunwayNo(runwayNo), this)
+
   }
 
   def sendToQueue(number: Int): Unit = airport.sendToQueue(airport.getQueueNo(number), this)
@@ -46,7 +46,7 @@ class Airplane(
       this.descendRunway
     }
     airport.getGateNo(number).reserve(this)
-//    airport.sendToGate(airport.getGateNo(number), this)
+
     
   }
 
