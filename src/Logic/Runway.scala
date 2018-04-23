@@ -8,7 +8,10 @@ class Runway(
   var currentPlane: Option[Airplane] = None) {
   
   def reserve(airplane: Airplane): Unit = {
-    if (currentPlane.isEmpty) currentPlane = Some(airplane)
+    if (currentPlane.isEmpty) {
+      println("Reserving runway number " + number)
+      currentPlane = Some(airplane)
+    }
     else {
       println("You assigned two planes on the same runway (Runway: "+ number + ") and it caused a fatal crash.")
       currentPlane.get.crash()
@@ -16,7 +19,11 @@ class Runway(
     }
   }
   
-  def unreserve(): Unit = currentPlane = None
+  def unreserve(): Unit = {
+    println("Unreserving runway number " + number)
+    currentPlane = None
+    println(currentPlane.isEmpty)
+  }
   
   override def toString: String = {
    var basic =  "NUMBER: " + number + "\n" + "\n" + 

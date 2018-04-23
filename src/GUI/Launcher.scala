@@ -45,7 +45,8 @@ object Test extends SimpleSwingApplication {
         foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
 
       this.revalidate()
-    }
+      this.repaint()
+      }
   }
   val newAirplanes = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
@@ -60,6 +61,7 @@ object Test extends SimpleSwingApplication {
         foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
 
       this.revalidate()
+      this.repaint()
     }
   }
 
@@ -70,6 +72,7 @@ object Test extends SimpleSwingApplication {
       this.contents.clear()
       airport.getPlanesOnRunways.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
       this.revalidate()
+      this.repaint()
     }
   }
 

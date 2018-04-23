@@ -35,7 +35,7 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
     })
     contents += new MenuItem(new Action("Change altitude") {
       def apply() = {
-        val possibilities: Array[Object] = (1000 to 15000 by 500).map(_ + "m").toArray.map(_.toString())
+        val possibilities: Array[Object] = (1000 to 15000 by 500).toArray.map(_.toString())
         val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Write the altitude between 1000 and 15000:", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
 
         val number = Integer.parseInt(numberAsString)
@@ -67,6 +67,7 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
           val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Pick a free gate", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
           val number = Integer.parseInt(numberAsString)
           airplane.sendToGate(number)
+          println(airport.getPlanesOnRunways)
         } else JOptionPane.showMessageDialog(dialogFrame, "There is no free gates available", "Problem", JOptionPane.ERROR_MESSAGE, icon)
       }
     })

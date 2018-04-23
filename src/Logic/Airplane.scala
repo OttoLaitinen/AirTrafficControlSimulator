@@ -20,6 +20,7 @@ class Airplane(
   var isInAir = true
   var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
   var goToInAirQueue: Option[InAirQueue] = None
+  private var hasReservedRunway: Boolean = false
 
   /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
@@ -58,7 +59,7 @@ class Airplane(
   def sendToGate(number: Int): Unit = {
     if (this.descendRunway.isDefined) {
       this.descendRunway.get.unreserve()
-      this.descendRunway
+      this.descendRunway = None
     }
     airport.getGateNo(number).reserve(this)
   }
@@ -68,7 +69,8 @@ class Airplane(
   def descendingOperations: Unit = {
     if (this.timeToDestination < 30 && altitude > 1500) {
       changeAltitude(1500)
-    } else if (this.timeToDestination < 10 && this.timeToDestination > 0) {
+    } else if (this.timeToDestination < 10 && this.timeToDestination > 0 && !hasReservedRunway) {
+      hasReservedRunway = true
       descendRunway.get.reserve(this)
       changeAltitude(0)
     } else if (this.timeToDestination == 0 && altitude == 0) {
