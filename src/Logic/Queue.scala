@@ -8,8 +8,12 @@ abstract class Queue(
   val planes: Buffer[Airplane] = Buffer[Airplane]()) {
 
   def addPlane(airplane: Airplane): Unit = {
-    if (planes.length < capacity) planes.+=(airplane)
-    else ??? /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.*/
+    if (planes.length < capacity) {      
+      planes.+=(airplane)
+    }
+    else {
+      println("WTF DYYD " + planes.length) /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.*/
+    }
   }
 
   def removePlane(airplane: Airplane): Unit = planes.-=(airplane)

@@ -21,6 +21,7 @@ class Airplane(
   var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
   var goToInAirQueue: Option[InAirQueue] = None
   private var hasReservedRunway: Boolean = false
+  private var queuingIn: Option[InAirQueue] = None
 
   /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
@@ -38,10 +39,11 @@ class Airplane(
 
   def descend(runwayNo: Int): Unit = {
     goToInAirQueue = None
+    queuingIn = None
     descendRunway = Some(airport.getRunwayNo(runwayNo))
 
   }
-  
+
   def crash(): Unit = {
     println("Plane carrying flight " + currentFlight.get.shortForm + " has crashed")
     airport.gameIsOn = false
@@ -52,14 +54,15 @@ class Airplane(
     val queue = airport.getQueueNo(number)
     if (queue.isInstanceOf[InAirQueue]) goToInAirQueue = Some(queue.asInstanceOf[InAirQueue])
     else ??? /*TODO Mitä tapahtuu kun kyseessä maajono*/
-    
+
     //airport.sendToQueue(airport.getQueueNo(number), this)
   }
 
   def sendToGate(number: Int): Unit = {
     if (this.descendRunway.isDefined) {
+      hasReservedRunway = false
       this.descendRunway.get.unreserve()
-      this.descendRunway = None
+
     }
     airport.getGateNo(number).reserve(this)
   }
@@ -77,10 +80,12 @@ class Airplane(
       isInAir = false
     }
   }
-  
+
   def queueOperations: Unit = {
-    if (this.timeToDestination < 30) {
-      /*TODO Vaihdetaan korkeus sopivaksi ja lisätään kone jonoon.*/ 
+    if (this.timeToDestination < 30 && !queuingIn.exists(_ == goToInAirQueue.get)) {
+      this.changeAltitude(goToInAirQueue.get.altitude.toInt)
+      goToInAirQueue.get.addPlane(this)
+      queuingIn = Some(goToInAirQueue.get)
     }
   }
 

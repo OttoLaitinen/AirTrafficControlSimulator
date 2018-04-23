@@ -49,7 +49,7 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
           val possibilities: Array[Object] = (airport.getFreeInAirQueues.map(_.idN + "m")).toArray.map(_.toString())
 
           if (!possibilities.isEmpty) {
-            val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Pick an altitude", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString()
+            val numberAsString = JOptionPane.showInputDialog(dialogFrame, "Pick an altitude", "", JOptionPane.PLAIN_MESSAGE, icon, possibilities, possibilities(0)).toString().dropRight(1)
             val number = Integer.parseInt(numberAsString)
             airplane.sendToQueue(number)
           } else JOptionPane.showMessageDialog(dialogFrame, "There are no free spaces in queues", "Problem", JOptionPane.ERROR_MESSAGE, icon)
