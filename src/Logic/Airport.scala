@@ -38,7 +38,16 @@ class Airport(
   }
 
   private def checkRunways: Unit = {
-    ???
+    for (way <- runways) {
+      if (crossingRunways.get(way).isDefined) {
+        val crossers = crossingRunways.get(way).get
+        if (way.currentPlane.isDefined && crossers.exists(_.currentPlane.isDefined)) {
+          println("Planes assigned on crossing runways. Fatal crash happened...")
+          way.currentPlane.get.crash()
+          crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
+        }
+      }
+    }
   }
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???

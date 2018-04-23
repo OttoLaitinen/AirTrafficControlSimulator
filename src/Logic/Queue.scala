@@ -7,12 +7,17 @@ abstract class Queue(
   val idNumber: Int,
   val planes: Buffer[Airplane] = Buffer[Airplane]()) {
 
+  
   def addPlane(airplane: Airplane): Unit = {
     if (planes.length < capacity) {      
       planes.+=(airplane)
     }
     else {
-      println("WTF DYYD " + planes.length) /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.*/
+      println("WTF DYYD " + planes.length) 
+      /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.
+       * Toinen mahdollisuus olisi tehdä "ilmoitus" joka näkyisi tällaisen tilanteen sattuessa, koska tällä hetkellä jonoon lisääminen tapahtuu
+       * viiveellä*/
+       
     }
   }
 
