@@ -13,10 +13,9 @@ abstract class Queue(
       planes.+=(airplane)
     }
     else {
-      println("WTF DYYD " + planes.length) 
-      /*TODO Heittää virheen. Virheen ei pitäisi olla mahdollinen, koska täyteen jonoon ei tulisi voida edes yrittää lisätä ketään.
-       * Toinen mahdollisuus olisi tehdä "ilmoitus" joka näkyisi tällaisen tilanteen sattuessa, koska tällä hetkellä jonoon lisääminen tapahtuu
-       * viiveellä*/
+      println("Too many planes were assigned on the same altitude. Crash occured.")
+      planes(0).crash()
+      airplane.crash()
        
     }
   }
