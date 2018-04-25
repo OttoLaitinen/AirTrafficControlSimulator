@@ -27,6 +27,8 @@ object Test extends SimpleSwingApplication {
   val creator: Creator = new Creator("Config/test.json")
   val airport = creator.createAirport
   var counter = 0
+  //TODO alkuskriini ja vaikeustason valinta
+  
 
   /*Methods*/
   def planesSortedByTime = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)

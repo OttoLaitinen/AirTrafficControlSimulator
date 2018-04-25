@@ -16,6 +16,8 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
   maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   border = Swing.LineBorder(Color.BLACK)
+  def crossingIsOccupied = airport.crossingRunways.get(runway).get.exists(_.currentPlane.isDefined)
+  def isOccupied = runway.currentPlane.isDefined
 
   font = new Font("Courier New", Font.BOLD, 12)
   
@@ -23,7 +25,7 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
     if (airport.crossingRunways.get(runway).isEmpty) "NaN"
     else {
       var basic = airport.crossingRunways.get(runway).get.map(_.number.toString() + ", ").foldLeft("")(_ + _).dropRight(2)
-      if (airport.crossingRunways.get(runway).get.exists(_.currentPlane.isDefined)) basic += "\n" + "!!! There are planes on crossing runways !!!"
+      if (crossingIsOccupied) basic += "\n" + "!!! There are planes on crossing runways !!!"
       basic
     }
     
@@ -33,11 +35,13 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
       var basic = "NUMBER: " + runway.number + "\n" + "\n" +
         "Length: " + runway.length + "m" + " || Condition: " + runway.condition + "%" + " || Crossing runways: " + crossingText + "\n"
 
-      if (runway.currentPlane.isDefined) basic = basic + "Currently Occupied by: " + runway.currentPlane.get.currentFlight.get.shortForm + " || Time to destination: " + runway.currentPlane.get.timeToDestination
+      if (isOccupied) basic = basic + "Currently Occupied by: " + runway.currentPlane.get.currentFlight.get.shortForm + " || Time to destination: " + runway.currentPlane.get.timeToDestination
       else basic = basic + "Not occupied at the moment"
 
       basic
     }
+    if (isOccupied || crossingIsOccupied) background = Color.RED
+    else background = Color.WHITE
     repaint()
   }
 }

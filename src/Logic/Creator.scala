@@ -110,7 +110,7 @@ class Creator(fileName: String) {
     val altitude: Int = rndm.nextInt(7) * 1000 + 8000
     val passengers: Int = 25 + rndm.nextInt(300)
     val totalCargoWeigth: Int = passengers * 80 //Kilograms
-    val minRunwayLength: Int = airport.getMaxRWLength
+    val minRunwayLength: Int = airport.getMaxRWLength - (rndm.nextInt(20) * 100)
 
     /*Plane is created without any flights assigned*/
     val newPlane = new Airplane(airport, airline, fuelCapacity, fuelConsumption, altitude,

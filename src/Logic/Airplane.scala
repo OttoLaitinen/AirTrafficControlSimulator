@@ -35,7 +35,7 @@ class Airplane(
     if (goToInAirQueue.isDefined) queueOperations
   }
 
-  def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this)
+  def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this) //TODO Nouseminen. Miten runwayn varaaminen/koneen poistaminen pelistä hoituu
 
   def descend(runwayNo: Int): Unit = {
     goToInAirQueue = None
@@ -59,6 +59,7 @@ class Airplane(
   }
 
   def sendToGate(number: Int): Unit = {
+    //TODO miten nextflight asetetaan vanhan flightin tilalle ja miten tästä ilmoitetaan?
     if (this.descendRunway.isDefined) {
       hasReservedRunway = false
       this.descendRunway.get.unreserve()
