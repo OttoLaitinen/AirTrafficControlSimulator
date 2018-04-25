@@ -3,6 +3,10 @@ package Logic
 import scala.util.parsing.json._
 import scala.collection.mutable.Buffer
 import scala.util.Random
+import java.io.FileReader
+import java.io.FileNotFoundException
+import java.io.BufferedReader
+import java.io.IOException
 
 class Creator(fileName: String) {
 
@@ -88,8 +92,10 @@ class Creator(fileName: String) {
   }
 
   /////////////////////////////////*PARSER ENDS HERE*//////////////////////////////////////////
-  
+
   val radarTime: Int = 20 //How many minutes before the plane is shown in the airport's system.
+  val airlines = reader("Config/Airlines.txt")
+  
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
     crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
 
@@ -97,42 +103,68 @@ class Creator(fileName: String) {
     val rndm = new Random()
 
     /*Necessary values for creating the airplane*/
-    val airline: String = "Finnair"
-    val fuelCapacity: Int = 80000 + rndm.nextInt(50) * 1000 //Litres
+    val airline: String = airlines(rndm.nextInt(airlines.length) - 1)
+    val fuelCapacity: Int = 20000 + rndm.nextInt(5) * 1000 //Litres
     val fuelConsumption: Int = 70 + rndm.nextInt(40) //Liters / minute
     val altitude: Int = rndm.nextInt(7) * 1000 + 8000
     val passengers: Int = 25 + rndm.nextInt(300)
     val totalCargoWeigth: Int = passengers * 80 //Kilograms
     val minRunwayLength: Int = airport.getMaxRWLength
-    
+
     /*Plane is created without any flights assigned*/
     val newPlane = new Airplane(airport, airline, fuelCapacity, fuelConsumption, altitude,
       totalCargoWeigth, minRunwayLength, passengers, None, None)
-    
+
     /*Flights are generated*/
     val currentFlight: Option[Flight] = Some(createFlight(newPlane))
     val nextFlight: Option[Flight] = None //TODO nextFlight mechanism
-    
-     /*The new airplane is updated with the new flights*/
+
+    /*The new airplane is updated with the new flights*/
     newPlane.currentFlight = currentFlight
-    newPlane.nextFlight = nextFlight    
-    
+    newPlane.nextFlight = nextFlight
+
     /*Return*/
     newPlane
   }
 
   private def createFlight(airplane: Airplane): Flight = {
     val rndm = new Random()
-    
+
     /*Necessary values*/
     val destination: String = "Heathrow" //TODO koko randomisaatio tässä osassa
     val departure: String = "Helsinki"
     val shortForm: String = "LON123"
     val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
-   
-    
+
     new Flight(destination, departure, shortForm, flightTime, airplane)
 
+  }
+
+  private def reader(filePath: String): Array[String] = {
+    val fileReader = try {
+      new FileReader(filePath);
+    } catch {
+      case e: FileNotFoundException =>
+        println("File not found")
+        return Array[String]() //TODO tulee ottaa huomioon myöhemmin
+    }
+
+    val lineReader = new BufferedReader(fileReader)
+
+    try {
+      var readLine = lineReader.readLine()
+      var returned: Buffer[String] = Buffer[String]()
+
+      while (readLine != null) {
+        returned += readLine
+        readLine = lineReader.readLine()
+      }
+      returned.toArray
+    } catch {
+      case e: IOException =>
+        println("There was an error when reading a file.")
+        return Array[String]() //TODO tulee ottaa huomioon myöhemmin
+    }
   }
 
 }

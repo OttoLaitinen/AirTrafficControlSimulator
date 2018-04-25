@@ -19,7 +19,7 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
 
   font = new Font("Courier New", Font.BOLD, 12)
   
-  val crossingText = {
+  def crossingText: String = {
     if (airport.crossingRunways.get(runway).isEmpty) "NaN"
     else {
       var basic = airport.crossingRunways.get(runway).get.map(_.number.toString() + ", ").foldLeft("")(_ + _).dropRight(2)

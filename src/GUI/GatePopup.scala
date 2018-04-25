@@ -22,6 +22,7 @@ import scala.swing.Action
 class GatePopup (val airplane: Airplane, val airport: Airport) extends PopupMenu {
   if (airplane.currentFlight.isDefined) {
     /*Menu juttuja joissa esim. kiitoradalle tai jonoon lähettäminen*/
+    contents += new MenuItem("Next flight stuff...")
   }
   else {
     /*Hangaarin lähettäminen aka koneen pelistä poistaminen*/
