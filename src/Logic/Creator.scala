@@ -93,9 +93,10 @@ class Creator(fileName: String) {
 
   /////////////////////////////////*PARSER ENDS HERE*//////////////////////////////////////////
 
-  val radarTime: Int = 20 //How many minutes before the plane is shown in the airport's system.
+  val nextFlightPercentage: Int = 30 //How many planes have a "nextFlight"
   val airlines = reader("Config/Airlines.txt")
-  
+  val cities = reader("Config/Cities.txt")
+
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
     crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
 
@@ -103,7 +104,7 @@ class Creator(fileName: String) {
     val rndm = new Random()
 
     /*Necessary values for creating the airplane*/
-    val airline: String = airlines(rndm.nextInt(airlines.length) - 1)
+    val airline: String = airlines(rndm.nextInt(airlines.length - 1))
     val fuelCapacity: Int = 20000 + rndm.nextInt(5) * 1000 //Litres
     val fuelConsumption: Int = 70 + rndm.nextInt(40) //Liters / minute
     val altitude: Int = rndm.nextInt(7) * 1000 + 8000
@@ -116,8 +117,12 @@ class Creator(fileName: String) {
       totalCargoWeigth, minRunwayLength, passengers, None, None)
 
     /*Flights are generated*/
-    val currentFlight: Option[Flight] = Some(createFlight(newPlane))
-    val nextFlight: Option[Flight] = None //TODO nextFlight mechanism
+    val currentFlight: Option[Flight] = Some(createFlight(newPlane, true,airport))
+
+    val nextFlight: Option[Flight] = {
+      if (rndm.nextInt(100) <= nextFlightPercentage) Some(createFlight(newPlane, false, airport))
+      else None
+    }
 
     /*The new airplane is updated with the new flights*/
     newPlane.currentFlight = currentFlight
@@ -127,13 +132,41 @@ class Creator(fileName: String) {
     newPlane
   }
 
-  private def createFlight(airplane: Airplane): Flight = {
+  private def createFlight(airplane: Airplane, arriving: Boolean, airport: Airport): Flight = {
     val rndm = new Random()
 
     /*Necessary values*/
-    val destination: String = "Heathrow" //TODO koko randomisaatio tässä osassa
-    val departure: String = "Helsinki"
-    val shortForm: String = "LON123"
+    val destination: String = {
+      if (arriving) city
+      else {
+        var city2 = cities(rndm.nextInt(cities.length -1))
+        while (city2 == city) {
+          city2 = cities(rndm.nextInt(cities.length - 1))
+        }
+        city2
+      }
+    }
+    val departure: String = {
+      if (!arriving) city
+      else {
+        var city2 = cities(rndm.nextInt(cities.length - 1))
+        while (city2 == city) {
+          city2 = cities(rndm.nextInt(cities.length - 1))
+        }
+        city2
+      }
+    }
+    val shortForm: String = {
+      var start = destination.take(3).toUpperCase()
+      var end = rndm.nextInt(999)
+      
+      while (airport.planes.exists(_.currentFlight.get.shortForm == (start + end))) {
+       start = destination.take(3).toUpperCase()
+      end = rndm.nextInt(999)
+      }
+      start + end
+      
+    }
     val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
 
     new Flight(destination, departure, shortForm, flightTime, airplane)

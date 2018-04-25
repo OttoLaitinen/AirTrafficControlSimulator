@@ -11,7 +11,7 @@ import java.awt.Color
 class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
   val textAreaWidth = 600
   val textAreaHeight = 80
-
+  //TODO Värikoodaukset runwayille
   editable = false
   maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))

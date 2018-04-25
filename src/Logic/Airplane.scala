@@ -98,7 +98,7 @@ class Airplane(
   def isChangingAlt: Boolean = wantedAltitude != altitude
 
   override def toString = {
-    var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + "\n" + "\n" +
+    var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
       "Altitude: " + altitude + "m || Passengers: " + passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
       "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
 
