@@ -1,7 +1,7 @@
 package Logic
 
 class Runway(
-  val length: Int,
+  val runwayLength: Int,
   val number: Int,
   var usable: Boolean = true,
   var condition: Double = 100.0,

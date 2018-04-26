@@ -44,10 +44,20 @@ class Airport(
         if (way.currentPlane.isDefined && crossers.exists(_.currentPlane.isDefined)) {
           println("Planes assigned on crossing runways. Fatal crash happened...")
           way.currentPlane.get.crash()
-          crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
+          return crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
         }
       }
+      if(way.currentPlane.isDefined) {
+        if (way.currentPlane.get.minRunwaylength > way.runwayLength) {
+          println("Run way was too short for the plane. Crash occured...")
+          return way.currentPlane.get.crash()
+        }
+        
+          
+      }
     }
+    
+    
   }
 
   def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
@@ -61,7 +71,7 @@ class Airport(
   def onTick(): Unit = {
     tick += 1
     updatePlanes
-    //checkRunways
+    checkRunways
 
   }
 
@@ -90,6 +100,6 @@ class Airport(
 
   def getGateNo(number: Int): Gate = gates.map(gate => gate.number -> gate).toMap.get(number).get //TODO Lisää THROW ERROR!
 
-  def getMaxRWLength: Int = runways.map(_.length).max
+  def getMaxRWLength: Int = runways.map(_.runwayLength).max
 
 }

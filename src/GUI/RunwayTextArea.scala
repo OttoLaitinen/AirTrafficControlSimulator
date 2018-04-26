@@ -33,7 +33,7 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
   def updateText: Unit = {
     text = {
       var basic = "NUMBER: " + runway.number + "\n" + "\n" +
-        "Length: " + runway.length + "m" + " || Condition: " + runway.condition + "%" + " || Crossing runways: " + crossingText + "\n"
+        "Length: " + runway.runwayLength + "m" + " || Condition: " + runway.condition + "%" + " || Crossing runways: " + crossingText + "\n"
 
       if (isOccupied) basic = basic + "Currently Occupied by: " + runway.currentPlane.get.currentFlight.get.shortForm + " || Time to destination: " + runway.currentPlane.get.timeToDestination
       else basic = basic + "Not occupied at the moment"

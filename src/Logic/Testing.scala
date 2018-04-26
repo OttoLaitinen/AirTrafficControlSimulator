@@ -26,7 +26,7 @@ object Testing extends App {
   airport.runways.foreach {
     runway =>
       println("#" + runway.number +
-        " // Length: " + runway.length +
+        " // Length: " + runway.runwayLength +
         " // Crossing runways: " + airport.crossingRunways.get(runway).get.map(_.number))
   }
 //  
