@@ -108,13 +108,12 @@ class Creator(fileName: String) {
     val fuelCapacity: Int = 20000 + rndm.nextInt(5) * 1000 //Litres
     val fuelConsumption: Int = 70 + rndm.nextInt(40) //Liters / minute
     val altitude: Int = rndm.nextInt(7) * 1000 + 8000
-    val passengers: Int = 25 + rndm.nextInt(300)
-    val totalCargoWeigth: Int = passengers * 80 //Kilograms
+    val totalCargoWeigth: Int = (25 + rndm.nextInt(300)) * 80 //Kilograms
     val minRunwayLength: Int = airport.getMaxRWLength - (rndm.nextInt(20) * 100)
 
     /*Plane is created without any flights assigned*/
     val newPlane = new Airplane(airport, airline, fuelCapacity, fuelConsumption, altitude,
-      totalCargoWeigth, minRunwayLength, passengers, None, None)
+      totalCargoWeigth, minRunwayLength, None, None)
 
     /*Flights are generated*/
     val currentFlight: Option[Flight] = Some(createFlight(newPlane, true,airport))
@@ -168,8 +167,9 @@ class Creator(fileName: String) {
       
     }
     val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
+    val passengers: Int = 25 + rndm.nextInt(300)
 
-    new Flight(destination, departure, shortForm, flightTime, airplane)
+    new Flight(destination, departure, shortForm, flightTime, passengers, airplane)
 
   }
 

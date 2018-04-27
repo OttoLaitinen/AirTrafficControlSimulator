@@ -19,7 +19,7 @@ class GateTextArea(val gate: Gate, val airport: Airport) extends TextArea {
   border = Swing.LineBorder(Color.BLACK)
   var oldtext: String = ""
 
-  font = new Font("Courier New", Font.BOLD, 12)
+  font = new Font("arial", Font.BOLD, 12)
   def updateText: Unit = {
     if (gate.toString() != oldtext) {
       text = gate.toString()

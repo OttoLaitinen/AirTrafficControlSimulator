@@ -30,7 +30,7 @@ class Airport(
     if (tick % 50 == 0) {
       time += 1
       createPlane
-      planes.foreach(_.currentFlight.get.update)
+      planes.foreach(plane => if(plane.isInAir) plane.currentFlight.get.update)
     }
 
     planes.foreach(_.checkAirplane)
@@ -51,16 +51,11 @@ class Airport(
         if (way.currentPlane.get.minRunwaylength > way.runwayLength) {
           println("Run way was too short for the plane. Crash occured...")
           return way.currentPlane.get.crash()
-        }
-        
-          
+        }            
       }
-    }
-    
-    
+    }       
   }
 
-  def ascendPlane(runway: Runway, plane: Airplane): Unit = ???
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
@@ -74,10 +69,8 @@ class Airport(
     checkRunways
 
   }
-
-  def ascendPlanesInQueues(runway: Runway): Unit = ???
-
-  def sendToQueue(queue: Queue, airplane: Airplane): Unit = ???
+  
+  def removePlane(airplane: Airplane): Unit = planes.-(airplane)
 
   def getQueueNo(number: Int): Queue = {
     if (queuesInAir.exists(_.idN == number)) queuesInAir.map(queue => queue.idN -> queue).toMap.get(number).get

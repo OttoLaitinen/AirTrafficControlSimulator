@@ -24,7 +24,7 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Edi
   else background = Color.GREEN
   
   text = airplane.toString() + "\n"
-  font = new Font("Courier New", Font.BOLD , 12)
+  font = new Font("arial", Font.BOLD, 12)
   
   val planePopup = new AirplanePopup(airplane, airport)
 

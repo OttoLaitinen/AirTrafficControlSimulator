@@ -11,7 +11,6 @@ import java.awt.Color
 class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
   val textAreaWidth = 600
   val textAreaHeight = 80
-  //TODO Värikoodaukset runwayille
   editable = false
   maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
@@ -19,7 +18,7 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
   def crossingIsOccupied = airport.crossingRunways.get(runway).get.exists(_.currentPlane.isDefined)
   def isOccupied = runway.currentPlane.isDefined
 
-  font = new Font("Courier New", Font.BOLD, 12)
+  font = new Font("arial", Font.BOLD, 12)
   
   def crossingText: String = {
     if (airport.crossingRunways.get(runway).isEmpty) "NaN"

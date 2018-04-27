@@ -8,7 +8,6 @@ class Airplane(
   var altitude: Int,
   var totalCargoWeight: Int,
   val minRunwaylength: Int,
-  var passengers: Int,
   var currentFlight: Option[Flight],
   var nextFlight: Option[Flight]) {
 
@@ -20,8 +19,12 @@ class Airplane(
   var isInAir = true
   var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
   var goToInAirQueue: Option[InAirQueue] = None
-  private var hasReservedRunway: Boolean = false
+  var ascendingRunway: Option[Runway] = None
+
+  var hasReservedRunway: Boolean = false
   private var queuingIn: Option[InAirQueue] = None
+
+  private var ascendingTimer: Int = 0
 
   /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
@@ -32,10 +35,16 @@ class Airplane(
     moveAirplane
     fuelOperations
     if (descendRunway.isDefined) descendingOperations
-    if (goToInAirQueue.isDefined) queueOperations
+    else if (goToInAirQueue.isDefined) queueOperations
+    else if (ascendingRunway.isDefined) ascendingOperations
   }
 
-  def ascend(runwayNo: Int): Unit = airport.ascendPlane(airport.getRunwayNo(runwayNo), this) //TODO Nouseminen. Miten runwayn varaaminen/koneen poistaminen pelistä hoituu
+  def ascend(runwayNo: Int): Unit = {
+    //TODO Nouseminen. Miten runwayn varaaminen/koneen poistaminen pelistä hoituu
+    ascendingRunway = Some(airport.getRunwayNo(runwayNo))
+    airport.getRunwayNo(runwayNo).reserve(this)
+    ascendingTimer = 10
+  }
 
   def descend(runwayNo: Int): Unit = {
     goToInAirQueue = None
@@ -60,6 +69,9 @@ class Airplane(
 
   def sendToGate(number: Int): Unit = {
     //TODO miten nextflight asetetaan vanhan flightin tilalle ja miten tästä ilmoitetaan?
+    if (this.nextFlight.isDefined) {
+      val oldFlight = currentFlight.get //TODO tästä pitää tulla jonkun lainen ilmoitus
+    }
     if (this.descendRunway.isDefined) {
       hasReservedRunway = false
       this.descendRunway.get.unreserve()
@@ -90,6 +102,17 @@ class Airplane(
     }
   }
 
+  def ascendingOperations: Unit = {
+    while (ascendingTimer > 0) {
+      if (airport.tick % 50 == 0) {
+        ascendingTimer -= 1
+      }
+    }
+    println("Plane took off succesfully")
+    ascendingRunway.get.unreserve()
+    airport.removePlane(this)
+  }
+
   def fuelOperations: Unit = {
     if (airport.tick % 50 == 0 && isInAir) {
       fuel = fuel - fuelConsumption.toInt
@@ -98,9 +121,11 @@ class Airplane(
 
   def isChangingAlt: Boolean = wantedAltitude != altitude
 
+  def timeToAscend: Int = ascendingTimer
+
   override def toString = {
     var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
-      "Altitude: " + altitude + "m || Passengers: " + passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
+      "Altitude: " + altitude + "m || Passengers: " + currentFlight.get.passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
       "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
 
     if (descendRunway.isDefined) basic += "LANDING RUNWAY: #" + descendRunway.get.number + " || Landing starts in " + math.max(this.timeToDestination - 10, 0) + "minutes"

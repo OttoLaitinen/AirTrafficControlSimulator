@@ -5,6 +5,7 @@ class Flight(
   val departure: String,
   val shortForm: String,
   val flightTime: Int,
+  val passengers: Int,
   val plane: Airplane) {
 
   var timeToDestination: Int = flightTime
