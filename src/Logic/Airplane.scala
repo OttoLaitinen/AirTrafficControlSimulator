@@ -57,7 +57,7 @@ class Airplane(
     goToInAirQueue = None
     queuingIn = None
     descendRunway = Some(airport.getRunwayNo(runwayNo))
-    
+
     airport.addNotification("Flight " + this.currentFlight.get.shortForm + " will land on runway number " + runwayNo + ".")
 
   }
@@ -78,10 +78,10 @@ class Airplane(
   def sendToGate(number: Int): Unit = {
     if (this.descendRunway.isDefined) {
       airport.points += this.currentFlight.get.timeToDestination * 10 + this.fuel
-      
+
       hasReservedRunway = false
       this.descendRunway.get.unreserve()
-      
+
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " is going to gate number " + number + ".")
     }
     if (this.nextFlight.isDefined) {
@@ -101,12 +101,12 @@ class Airplane(
   def descendingOperations: Unit = {
     if (this.timeToDestination < 30 && altitude > 1500) {
       changeAltitude(1500)
-    } else if (this.timeToDestination < 10 && this.timeToDestination > 0 && !hasReservedRunway) {
+    } else if (this.timeToDestination < 10  && !hasReservedRunway && isInAir) {
       hasReservedRunway = true
       descendRunway.get.reserve(this)
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + descendRunway.get.number + " for landing.")
       changeAltitude(0)
-    } else if (this.timeToDestination == 0 && altitude == 0) {
+    } else if (this.timeToDestination <= 0 && altitude == 0 && isInAir) {
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has landed succesfully.")
       isInAir = false
     }
@@ -143,6 +143,7 @@ class Airplane(
 
   def timeToAscend: Int = ascendingTimer
 
+  //TODO fix the removing error bug
   override def toString = {
     var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
       "Altitude: " + altitude + "m || Passengers: " + currentFlight.get.passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
