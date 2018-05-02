@@ -13,7 +13,10 @@ class Gate(
   
   override def toString() = {
     var basic =  "NUMBER: " + number + "\n" 
-    if(currentPlane.isDefined) basic += "Occupied by: " + currentPlane.get.currentFlight.get.shortForm + "."
+    if(currentPlane.isDefined) {
+      if(currentPlane.get.currentFlight.isDefined) basic += "Occupied by: " + currentPlane.get.currentFlight.get.shortForm + ". This plane needs a runway with a minimum length of " + currentPlane.get.minRunwaylength + " meters." 
+      else basic += "Occupied by a plane with no next flight."
+    }
     else basic += "Currently not occupied."
     
     basic

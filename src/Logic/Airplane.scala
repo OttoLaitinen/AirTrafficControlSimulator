@@ -13,18 +13,20 @@ class Airplane(
 
   /*Additional values and variables*/
 
-  var fuel: Int = fuelCapacity //mahdollisesti minus joku luku mut meh... //liters
+  var fuel: Int = fuelCapacity //liters
 
   var wantedAltitude = altitude
   var isInAir = true
-  var descendRunway: Option[Runway] = None //TODO reset-nappula tälle
+  var descendRunway: Option[Runway] = None
   var goToInAirQueue: Option[InAirQueue] = None
   var ascendingRunway: Option[Runway] = None
+  var gate: Option[Gate] = None
 
   var hasReservedRunway: Boolean = false
   private var queuingIn: Option[InAirQueue] = None
 
   private var ascendingTimer: Int = 0
+  private var hasNotified: Boolean = false
 
   /*Functions and methods*/
   def changeAltitude(newAltitude: Int): Unit = wantedAltitude = newAltitude
@@ -37,12 +39,17 @@ class Airplane(
     if (descendRunway.isDefined) descendingOperations
     else if (goToInAirQueue.isDefined) queueOperations
     else if (ascendingRunway.isDefined) ascendingOperations
+    if (!descendRunway.isDefined && this.timeToDestination < 30 && !hasNotified) {
+      airport.addNotification("Flight " + currentFlight.get.shortForm + " is ready for landing.")
+      hasNotified = true
+    }
   }
 
   def ascend(runwayNo: Int): Unit = {
-    //TODO Nouseminen. Miten runwayn varaaminen/koneen poistaminen pelistä hoituu
+    gate.get.unreserve()
     ascendingRunway = Some(airport.getRunwayNo(runwayNo))
     airport.getRunwayNo(runwayNo).reserve(this)
+    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + runwayNo + " for take off.")
     ascendingTimer = 10
   }
 
@@ -50,11 +57,14 @@ class Airplane(
     goToInAirQueue = None
     queuingIn = None
     descendRunway = Some(airport.getRunwayNo(runwayNo))
+    
+    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " will land on runway number " + runwayNo + ".")
 
   }
 
   def crash(): Unit = {
     println("Plane carrying flight " + currentFlight.get.shortForm + " has crashed")
+    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has crashed.")
     airport.gameIsOn = false
   }
 
@@ -62,22 +72,28 @@ class Airplane(
     descendRunway = None
     val queue = airport.getQueueNo(number)
     if (queue.isInstanceOf[InAirQueue]) goToInAirQueue = Some(queue.asInstanceOf[InAirQueue])
-    else ??? /*TODO Mitä tapahtuu kun kyseessä maajono*/
-
-    //airport.sendToQueue(airport.getQueueNo(number), this)
+    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " is now instructed to queue in " + number + " meters.")
   }
 
   def sendToGate(number: Int): Unit = {
-    //TODO miten nextflight asetetaan vanhan flightin tilalle ja miten tästä ilmoitetaan?
-    if (this.nextFlight.isDefined) {
-      val oldFlight = currentFlight.get //TODO tästä pitää tulla jonkun lainen ilmoitus
-    }
     if (this.descendRunway.isDefined) {
+      airport.points += this.currentFlight.get.timeToDestination * 10 + this.fuel
+      
       hasReservedRunway = false
       this.descendRunway.get.unreserve()
-
+      
+      airport.addNotification("Flight " + this.currentFlight.get.shortForm + " is going to gate number " + number + ".")
     }
-    airport.getGateNo(number).reserve(this)
+    if (this.nextFlight.isDefined) {
+      val oldFlight = currentFlight.get //TODO tästä pitää tulla jonkunlainen ilmoitus
+      currentFlight = nextFlight
+      airport.addNotification("Plane that was carrying " + oldFlight.shortForm + " is now ready to take off as flight  " + currentFlight.get.shortForm + ".")
+    } else {
+      currentFlight = None
+    }
+
+    gate = Some(airport.getGateNo(number))
+    gate.get.reserve(this)
   }
 
   def timeToDestination: Int = if (currentFlight.isDefined) math.max(currentFlight.get.timeToDestination, 0) else 0
@@ -88,8 +104,10 @@ class Airplane(
     } else if (this.timeToDestination < 10 && this.timeToDestination > 0 && !hasReservedRunway) {
       hasReservedRunway = true
       descendRunway.get.reserve(this)
+      airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + descendRunway.get.number + " for landing.")
       changeAltitude(0)
     } else if (this.timeToDestination == 0 && altitude == 0) {
+      airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has landed succesfully.")
       isInAir = false
     }
   }
@@ -99,6 +117,7 @@ class Airplane(
       this.changeAltitude(goToInAirQueue.get.altitude.toInt)
       goToInAirQueue.get.addPlane(this)
       queuingIn = Some(goToInAirQueue.get)
+      airport.addNotification("Flight " + this.currentFlight.get.shortForm + " is now queuing in " + queuingIn.get.idN + " meters.")
     }
   }
 
@@ -108,7 +127,8 @@ class Airplane(
         ascendingTimer -= 1
       }
     }
-    println("Plane took off succesfully")
+    //TODO Nousemisen testaaminen
+    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " took off succesfully.")
     ascendingRunway.get.unreserve()
     airport.removePlane(this)
   }

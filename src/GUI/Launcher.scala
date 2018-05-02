@@ -1,3 +1,5 @@
+/**@author Otto Laitinen*/
+
 package GUI
 
 import scala.swing._

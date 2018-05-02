@@ -22,8 +22,10 @@ class Airport(
   var tick: Int = 0
   var gameIsOn = true
   val planes: Buffer[Airplane] = Buffer[Airplane]()
+  private var notifications: Buffer[String] = Buffer[String]()
   val random = new Random()
   val descendTime = 30
+  var points = 0
 
   /*Functions*/
   private def updatePlanes: Unit = {
@@ -94,5 +96,20 @@ class Airport(
   def getGateNo(number: Int): Gate = gates.map(gate => gate.number -> gate).toMap.get(number).get //TODO Lisää THROW ERROR!
 
   def getMaxRWLength: Int = runways.map(_.runwayLength).max
+  
+  def getTime: String = {
+    val hours: Int = 0 + (time / 60)
+    val minutes: Int = 0 + time - (hours * 60)
+    
+    hours + "h " + minutes + "min"
+  }
+  
+  def addNotification(text: String): Unit ={
+    notifications.+=:(text)
+    notifications = notifications.take(15)
+  }
+  
+  def getNotifications: Buffer[String] = notifications
+  
 
 }

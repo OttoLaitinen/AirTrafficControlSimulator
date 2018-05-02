@@ -26,19 +26,19 @@ class MainGame(airport: Airport) extends MainFrame {
   val fullHeight = 900
   val textAreaHeight = 80
   val textAreaWidth = 600
-  
+
   def isRunning = airport.gameIsOn
 
   def planesSortedByTime = airport.planes.sortWith(_.timeToDestination > _.timeToDestination)
   val dialogFrame = new JFrame()
 
-
   /*GUI elements
      *
-     * Here are the GUI elements. It is quite messy down here but what can you do...*/
+     * Here are the GUI elements. It is quite messy down here but oh well...*/
+
   val closestAirplanes = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
-    background = Color.lightGray
+    background = Color.gray
     def update = {
       this.contents.clear()
 
@@ -54,7 +54,7 @@ class MainGame(airport: Airport) extends MainFrame {
   }
   val newAirplanes = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
-    background = Color.lightGray
+    background = Color.gray
     def update = {
       this.contents.clear()
 
@@ -71,7 +71,7 @@ class MainGame(airport: Airport) extends MainFrame {
 
   val airplanesOnRunways = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
-    background = Color.lightGray
+    background = Color.gray
     def update(): Unit = {
       this.contents.clear()
       airport.getPlanesOnRunways.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
@@ -105,17 +105,6 @@ class MainGame(airport: Airport) extends MainFrame {
     }
   }
 
-  val refresh = new Button {
-    text = "Add plane to the first queue"
-    listenTo(mouse.clicks)
-    reactions += {
-      case MouseClicked(_, p, _, _, _) => {
-        airport.queuesInAir(0).addPlane(airport.planes(0))
-
-      }
-    }
-  }
-
   val airplaneInfo = new TabbedPane {
     preferredSize = (new Dimension(textAreaWidth, fullHeight - 10))
     pages.+=(new scala.swing.TabbedPane.Page("Closest Planes", closestAirplanes))
@@ -131,8 +120,55 @@ class MainGame(airport: Airport) extends MainFrame {
 
   }
 
+  val infoPanel = new EditorPane {
+    def update(): Unit = {
+      text = "Here is some basic info about the game: " + "\n" + "\n" +
+        "Points: " + airport.points + "\n" + "\n" +
+        "Time survived: " + airport.getTime + "\n" + "\n" +
+        "Planes on radar: " + airport.planes.
+        filterNot(airport.getPlanesAtGates.contains(_)).
+        filterNot(airport.getPlanesOnRunways.contains(_)).
+        filterNot(airport.getPlanesInQueues.contains(_)).length + "\n" + "\n" +
+        "Gates free: " + airport.getFreeGates.length
+      revalidate()
+      repaint()
+    }
+    background = Color.lightGray
+    editable = false
+  }
+
+  val notifications = new BoxPanel(Orientation.Vertical) {
+    border = Swing.LineBorder(Color.BLACK)
+    background = Color.gray
+    def update = {
+      this.contents.clear()
+
+      airport.getNotifications.foreach(notification => contents += new TextArea {
+        
+        text = notification 
+        val textAreaHeight = (airplaneInfo.preferredSize.height / 2) / 15
+        editable = false
+        maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
+        minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
+        border = Swing.LineBorder(Color.BLACK)
+      
+      })
+
+      this.revalidate()
+      this.repaint()
+    }
+  }
+  
+    val infoThings = new TabbedPane {
+    preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
+    pages.+=(new scala.swing.TabbedPane.Page("Basic Info", infoPanel))
+    pages.+=(new scala.swing.TabbedPane.Page("Notifications", notifications))
+
+  }
+
   /**This is the main game panel that every other game panel builds on**/
   val mainPanel = new GridBagPanel {
+    background = Color.LIGHT_GRAY
     preferredSize = (new Dimension(width, fullHeight))
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
@@ -150,7 +186,7 @@ class MainGame(airport: Airport) extends MainFrame {
     }
     add(airplaneInfo, constraints(0, 0, gridheight = 2, fill = GridBagPanel.Fill.Vertical))
     add(groundObjects, constraints(1, 0))
-    add(refresh, constraints(1, 1))
+    add(infoThings, constraints(1, 1))
   }
 
   /*                            GUI Elements end here...                               */
@@ -178,6 +214,8 @@ class MainGame(airport: Airport) extends MainFrame {
           newAirplanes.update
           airplanesOnRunways.update()
           airQueuePanel.update()
+          infoPanel.update()
+          notifications.update
 
         }
       } else {
