@@ -59,7 +59,10 @@ class Creator(fileName: String) {
 
   def getRunway(number: Int): Runway = {
     val runwayMap = runways.map(runway => runway.number -> runway).toMap //Helps with finding the Runway with its number only
-    runwayMap.get(number).get //TODO Needs to send an error if no corresponding runway is found
+    val option = runwayMap.get(number)
+    if (option.isDefined) option.get
+    else throw new Exception("Runway with number " + number + "doesn't exist; there is something wrong with the config files.")
+   
   }
 
   val crossingRunways: Map[Runway, Vector[Runway]] = runwaysData.map { //(Runway, Vector[Runway]).toMap
@@ -94,8 +97,12 @@ class Creator(fileName: String) {
   /////////////////////////////////*PARSER ENDS HERE*//////////////////////////////////////////
 
   val nextFlightPercentage: Int = 30 //How many planes have a "nextFlight"
-  val airlines = reader("Config/Airlines.txt")
-  val cities = reader("Config/Cities.txt")
+  val airlines: Array[String] = reader("Config/Airlines.txt")
+  val cities: Array[String] = reader("Config/Cities.txt")
+  
+  require(airlines.length > 0, "Config file for airlines has problems.")
+  require(cities.length >0 , "Config file for cities has problems.")
+  
 
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
     crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
@@ -116,7 +123,7 @@ class Creator(fileName: String) {
       totalCargoWeigth, minRunwayLength, None, None)
 
     /*Flights are generated*/
-    val currentFlight: Option[Flight] = Some(createFlight(newPlane, true,airport))
+    val currentFlight: Option[Flight] = Some(createFlight(newPlane, true, airport))
 
     val nextFlight: Option[Flight] = {
       if (rndm.nextInt(100) <= nextFlightPercentage) Some(createFlight(newPlane, false, airport))
@@ -138,7 +145,7 @@ class Creator(fileName: String) {
     val destination: String = {
       if (arriving) city
       else {
-        var city2 = cities(rndm.nextInt(cities.length -1))
+        var city2 = cities(rndm.nextInt(cities.length - 1))
         while (city2 == city) {
           city2 = cities(rndm.nextInt(cities.length - 1))
         }
@@ -158,13 +165,13 @@ class Creator(fileName: String) {
     val shortForm: String = {
       var start = destination.take(3).toUpperCase()
       var end = rndm.nextInt(999)
-      
+
       while (airport.planes.filter(_.currentFlight.isDefined).exists(_.currentFlight.get.shortForm == (start + end))) {
-       start = destination.take(3).toUpperCase()
-      end = rndm.nextInt(999)
+        start = destination.take(3).toUpperCase()
+        end = rndm.nextInt(999)
       }
       start + end
-      
+
     }
     val flightTime: Int = 60 + rndm.nextInt(12) * 10 //minutes
     val passengers: Int = 25 + rndm.nextInt(300)
@@ -179,7 +186,7 @@ class Creator(fileName: String) {
     } catch {
       case e: FileNotFoundException =>
         println("File not found")
-        return Array[String]() //TODO tulee ottaa huomioon myöhemmin
+        return Array[String]() 
     }
 
     val lineReader = new BufferedReader(fileReader)
@@ -196,7 +203,7 @@ class Creator(fileName: String) {
     } catch {
       case e: IOException =>
         println("There was an error when reading a file.")
-        return Array[String]() //TODO tulee ottaa huomioon myöhemmin
+        return Array[String]() 
     }
   }
 

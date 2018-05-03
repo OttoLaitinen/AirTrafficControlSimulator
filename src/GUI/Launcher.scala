@@ -52,7 +52,7 @@ object Test {
     val end = new EndScreen(airport)
     end.visible = true
 
-    println("End of main function")
+    
 
   }
 

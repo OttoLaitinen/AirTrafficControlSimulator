@@ -29,13 +29,13 @@ class Airport(
   var endingReason: Option[String] = None
 
   /*Functions*/
-  def planes:Buffer[Airplane] = planeBuffer
-  
+  def planes: Buffer[Airplane] = planeBuffer
+
   private def updatePlanes: Unit = {
     if (tick % 50 == 0) {
       time += 1
       createPlane
-      planeBuffer.foreach(plane => if(plane.isInAir) plane.currentFlight.get.update)
+      planeBuffer.foreach(plane => if (plane.isInAir) plane.currentFlight.get.update)
     }
 
     planeBuffer.foreach(_.checkAirplane)
@@ -48,20 +48,19 @@ class Airport(
       if (crossingRunways.get(way).isDefined) {
         val crossers = crossingRunways.get(way).get
         if (way.currentPlane.isDefined && crossers.exists(_.currentPlane.isDefined)) {
-          endingReason = Some( "Planes assigned on crossing runways. Fatal crash happened...")
+          endingReason = Some("Planes assigned on crossing runways. Fatal crash happened...")
           way.currentPlane.get.crash()
           return crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
         }
       }
-      if(way.currentPlane.isDefined) {
+      if (way.currentPlane.isDefined) {
         if (way.currentPlane.get.minRunwaylength > way.runwayLength) {
-          endingReason = Some( "Runway was too short for the plane. Crash occured...")
+          endingReason = Some("Runway was too short for the plane. Crash occured...")
           return way.currentPlane.get.crash()
-        }            
+        }
       }
-    }       
+    }
   }
-
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
@@ -79,7 +78,7 @@ class Airport(
     planeBuffer.+=(airplane)
     planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
   }
-  
+
   def removePlane(airplane: Airplane): Unit = {
     planeBuffer.-(airplane)
     planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
@@ -88,39 +87,44 @@ class Airport(
   def getQueueNo(number: Int): Queue = {
     if (queuesInAir.exists(_.idN == number)) queuesInAir.map(queue => queue.idN -> queue).toMap.get(number).get
     else if (queuesOnGround.exists(_.idN == number)) queuesOnGround.map(queue => queue.idN -> queue).toMap.get(number).get
-    else ??? //TODO Lisää THROW ERROR!
+    else throw new Exception("Queue with number " + number + "doesn't exist; there is something wrong with the config files.")
   }
 
   def getRunwayNo(runwayNo: Int): Runway = {
-    runways.map(runway => runway.number -> runway).toMap.get(runwayNo).get //TODO Lisää THROW ERROR!
+    val option = runways.map(runway => runway.number -> runway).toMap.get(runwayNo)
+    if (option.isDefined) option.get
+    else throw new Exception("Runway with number " + runwayNo + "doesn't exist; there is something wrong with the config files.")
   }
   def getPlanesAtGates: Vector[Airplane] = gates.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
 
   def getPlanesOnRunways: Vector[Airplane] = runways.filter(_.currentPlane.isDefined).map(_.currentPlane.get)
-  
+
   def getPlanesInQueues: Vector[Airplane] = queuesInAir.map(queue => queue.planes).flatten
 
   def getFreeGates: Vector[Gate] = gates.filterNot(_.currentPlane.isDefined)
-  
+
   def getFreeInAirQueues: Vector[InAirQueue] = queuesInAir.filterNot(queue => queue.c <= queue.planes.length)
 
-  def getGateNo(number: Int): Gate = gates.map(gate => gate.number -> gate).toMap.get(number).get //TODO Lisää THROW ERROR!
+  def getGateNo(number: Int): Gate = {
+    val option = gates.map(gate => gate.number -> gate).toMap.get(number)
+    if (option.isDefined) option.get
+    else throw new Exception("Gate with number " + number + "doesn't exist; there is something wrong with the config files.")
+  }
 
   def getMaxRWLength: Int = runways.map(_.runwayLength).max
-  
+
   def getTime: String = {
     val hours: Int = 0 + (time / 60)
     val minutes: Int = 0 + time - (hours * 60)
-    
+
     hours + "h " + minutes + "min"
   }
-  
-  def addNotification(text: String): Unit ={
+
+  def addNotification(text: String): Unit = {
     notifications.+=:(text)
     notifications = notifications.take(15)
   }
-  
+
   def getNotifications: Buffer[String] = notifications
-  
 
 }

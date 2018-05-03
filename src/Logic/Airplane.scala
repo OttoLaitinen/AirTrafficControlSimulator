@@ -90,7 +90,7 @@ class Airplane(
       gate.get.reserve(this)
     }
     if (this.nextFlight.isDefined) {
-      val oldFlight = currentFlight.get //TODO tästä pitää tulla jonkunlainen ilmoitus
+      val oldFlight = currentFlight.get 
       currentFlight = nextFlight
       airport.addNotification("Plane that was carrying " + oldFlight.shortForm + " is now ready to take off as flight  " + currentFlight.get.shortForm + ".")
     } else {
@@ -153,19 +153,9 @@ class Airplane(
   def isChangingAlt: Boolean = wantedAltitude != altitude
 
   def timeToAscend: Int = ascendingTimer
+  
+ 
 
-  //TODO Korjaa myös nouseville koneille
-  override def toString = {
-    var basic = ""
-    if (this.currentFlight.isDefined) {
-      basic += "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
-        "Altitude: " + altitude + "m || Passengers: " + currentFlight.get.passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
-        "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
-    }
-    if (descendRunway.isDefined) basic += "LANDING RUNWAY: #" + descendRunway.get.number + " || Landing starts in " + math.max(this.timeToDestination - 10, 0) + "minutes"
-
-    basic
-  }
 
 }
 

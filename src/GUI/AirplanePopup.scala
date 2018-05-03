@@ -22,7 +22,7 @@ import scala.swing.Action
 class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupMenu {
   val dialogFrame = new JFrame()
 
-  if (airplane.isInAir) {
+  if (airplane.isInAir && airplane.altitude >= 1000) {
     //TODO Ei voi olla mahdollista että koneen jo laskeutuessa asiota vaihdetaan
     contents += new MenuItem(new Action("Descend") {
       def apply() = {
@@ -43,7 +43,7 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
       }
     })
 
-    if (airplane.isInAir && airplane.goToInAirQueue.isEmpty) {
+    if (airplane.isInAir && airplane.goToInAirQueue.isEmpty && airplane.altitude >= 1000) {
       contents += new MenuItem(new Action("Send to queue around the airport") {
         def apply() = {
           val possibilities: Array[Object] = (airport.queuesInAir.map(_.idN + "m")).toArray.map(_.toString())
