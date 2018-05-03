@@ -39,7 +39,6 @@ object Test {
         case 1 => new Creator("Config/test.json")
         case 2 => new Creator("Config/test.json")
         case 3 => new Creator("Config/test.json")
-        case _ => throw new NullPointerException("LOOL")
       }
     }
     val airport: Airport = creator.createAirport
@@ -52,11 +51,12 @@ object Test {
     val end = new EndScreen(airport)
     end.visible = true
 
+    //TODO Start info
     
 
   }
 
-  /*Methods*/
+
 
 }
 

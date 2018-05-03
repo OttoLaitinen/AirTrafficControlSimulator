@@ -29,7 +29,7 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Edi
     if (airplane.currentFlight.isDefined) {
       basic += "Flight: " + airplane.currentFlight.get.shortForm + " || Airline: " + airplane.airline + " || From: " + airplane.currentFlight.get.departure + " || To: " + airplane.currentFlight.get.destination + "\n" + "\n" +
         "Altitude: " + airplane.altitude + "m || Passengers: " + airplane.currentFlight.get.passengers + " || Minimum Runway Length: " + airplane.minRunwaylength + "m" + "\n" +
-        "Fuel: " + airplane.fuel + " litres || Consumption: " + airplane.fuelConsumption + "l/min" + " || ETA: " + airplane.timeToDestination + "min" + "\n"
+        "Fuel: " + airplane.fuel + " litres || Consumption: " + airplane.fuelConsumption + "l/min" + " || Time to airport: " + airplane.timeToDestination + "min" + "\n"
     }
     
     if (airplane.descendRunway.isDefined) basic += "LANDING RUNWAY: #" + airplane.descendRunway.get.number + " || Landing starts in " + math.max(airplane.timeToDestination - 10, 0) + "minutes"

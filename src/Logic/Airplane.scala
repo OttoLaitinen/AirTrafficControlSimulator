@@ -43,6 +43,11 @@ class Airplane(
       airport.addNotification("Flight " + currentFlight.get.shortForm + " is ready for landing.")
       hasNotified = true
     }
+    else if (this.timeToDestination <= 0 && !airport.getFreeInAirQueues.isEmpty) this.sendToQueue(airport.getFreeInAirQueues(0).idN)
+    else if (this.timeToDestination <= 0) {
+      airport.endingReason = Some("Plane had no instructions when arriving to the airspace of the airport and all the queuing altitudens were full. This resulted in a crash.")
+      this.crash()
+    }
   }
 
   def ascend(runwayNo: Int): Unit = {
@@ -148,6 +153,12 @@ class Airplane(
     if (airport.tick % 50 == 0 && isInAir) {
       fuel = fuel - fuelConsumption.toInt
     }
+    
+    if (fuel <= 0) {
+      airport.endingReason = Some("Plane carrying flight " + this.currentFlight.get.shortForm + " ran out of fuel and crashed.")
+      this.crash()         
+    } 
+    else if (fuel - 30 * fuelConsumption <= 0) airport.addNotification("Plane carrying flight " + this.currentFlight.get.shortForm + "is running out of fuel!")
   }
 
   def isChangingAlt: Boolean = wantedAltitude != altitude

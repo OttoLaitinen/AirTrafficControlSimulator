@@ -22,7 +22,7 @@ import java.awt.Font
  * *
  */
 class MainGame(airport: Airport) extends MainFrame {
-  val width = 1700
+  val width = 1800
   val fullHeight = 900
   val textAreaHeight = 80
   val textAreaWidth = 600
@@ -114,7 +114,7 @@ class MainGame(airport: Airport) extends MainFrame {
   }
 
   val groundObjects = new TabbedPane {
-    preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
+    preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height))
     pages.+=(new scala.swing.TabbedPane.Page("Runways", runwayScroller))
     pages.+=(new scala.swing.TabbedPane.Page("Gates", gateScroller))
 
@@ -129,7 +129,8 @@ class MainGame(airport: Airport) extends MainFrame {
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
         filterNot(airport.getPlanesInQueues.contains(_)).length + "\n" + "\n" +
-        "Gates free: " + airport.getFreeGates.length
+        "Gates free: " + airport.getFreeGates.length + "\n" +
+        "Gueues free: " + airport.getFreeInAirQueues.length
       revalidate()
       repaint()
     }
@@ -144,26 +145,28 @@ class MainGame(airport: Airport) extends MainFrame {
       this.contents.clear()
 
       airport.getNotifications.foreach(notification => contents += new TextArea {
-        
-        text = notification 
+
+        text = notification
         val textAreaHeight = (airplaneInfo.preferredSize.height / 2) / 15
         editable = false
         maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
         minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
         border = Swing.LineBorder(Color.BLACK)
-      
+
       })
 
       this.revalidate()
       this.repaint()
     }
   }
-  
-    val infoThings = new TabbedPane {
+
+  val infoTab = new TabbedPane {
     preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
     pages.+=(new scala.swing.TabbedPane.Page("Basic Info", infoPanel))
+  }
+  val notifTab = new TabbedPane {
+    preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
     pages.+=(new scala.swing.TabbedPane.Page("Notifications", notifications))
-
   }
 
   /**This is the main game panel that every other game panel builds on**/
@@ -185,8 +188,9 @@ class MainGame(airport: Airport) extends MainFrame {
       c
     }
     add(airplaneInfo, constraints(0, 0, gridheight = 2, fill = GridBagPanel.Fill.Vertical))
-    add(groundObjects, constraints(1, 0))
-    add(infoThings, constraints(1, 1))
+    add(groundObjects, constraints(1, 0, gridheight = 2, fill = GridBagPanel.Fill.Vertical))
+    add(infoTab, constraints(2, 0))
+    add(notifTab, constraints(2, 1))
   }
 
   /*                            GUI Elements end here...                               */
