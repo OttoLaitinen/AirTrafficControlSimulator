@@ -39,13 +39,14 @@ class Airplane(
     if (descendRunway.isDefined) descendingOperations
     else if (goToInAirQueue.isDefined) queueOperations
     else if (ascendingRunway.isDefined) ascendingOperations
-    if (!descendRunway.isDefined && this.timeToDestination < 30 && !hasNotified) {
+    else if (!descendRunway.isDefined && this.timeToDestination < 30 && !hasNotified && isInAir) {
       airport.addNotification("Flight " + currentFlight.get.shortForm + " is ready for landing.")
       hasNotified = true
     }
   }
 
   def ascend(runwayNo: Int): Unit = {
+    airport.addPlane(this)
     gate.get.unreserve()
     ascendingRunway = Some(airport.getRunwayNo(runwayNo))
     airport.getRunwayNo(runwayNo).reserve(this)
@@ -81,8 +82,12 @@ class Airplane(
 
       hasReservedRunway = false
       this.descendRunway.get.unreserve()
+      descendRunway = None
 
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " is going to gate number " + number + ".")
+      airport.removePlane(this)
+      gate = Some(airport.getGateNo(number))
+      gate.get.reserve(this)
     }
     if (this.nextFlight.isDefined) {
       val oldFlight = currentFlight.get //TODO tästä pitää tulla jonkunlainen ilmoitus
@@ -92,8 +97,6 @@ class Airplane(
       currentFlight = None
     }
 
-    gate = Some(airport.getGateNo(number))
-    gate.get.reserve(this)
   }
 
   def timeToDestination: Int = if (currentFlight.isDefined) math.max(currentFlight.get.timeToDestination, 0) else 0
@@ -101,7 +104,7 @@ class Airplane(
   def descendingOperations: Unit = {
     if (this.timeToDestination < 30 && altitude > 1500) {
       changeAltitude(1500)
-    } else if (this.timeToDestination < 10  && !hasReservedRunway && isInAir) {
+    } else if (this.timeToDestination < 10 && !hasReservedRunway && isInAir) {
       hasReservedRunway = true
       descendRunway.get.reserve(this)
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + descendRunway.get.number + " for landing.")
@@ -122,15 +125,18 @@ class Airplane(
   }
 
   def ascendingOperations: Unit = {
-    while (ascendingTimer > 0) {
-      if (airport.tick % 50 == 0) {
-        ascendingTimer -= 1
-      }
+
+    if (airport.tick % 50 == 0) {
+      ascendingTimer -= 1
+
     }
     //TODO Nousemisen testaaminen
-    airport.addNotification("Flight " + this.currentFlight.get.shortForm + " took off succesfully.")
-    ascendingRunway.get.unreserve()
-    airport.removePlane(this)
+    if (ascendingTimer <= 0) {
+      airport.addNotification("Flight " + this.currentFlight.get.shortForm + " took off succesfully.")
+      ascendingRunway.get.unreserve()
+      ascendingRunway = None
+      airport.removePlane(this)
+    }
   }
 
   def fuelOperations: Unit = {
@@ -145,10 +151,12 @@ class Airplane(
 
   //TODO fix the removing error bug
   override def toString = {
-    var basic = "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
-      "Altitude: " + altitude + "m || Passengers: " + currentFlight.get.passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
-      "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
-
+    var basic = ""
+    if (this.currentFlight.isDefined) {
+      basic += "Flight: " + currentFlight.get.shortForm + " || Airline: " + airline + " || From: " + currentFlight.get.departure + " || To: " + currentFlight.get.destination + "\n" + "\n" +
+        "Altitude: " + altitude + "m || Passengers: " + currentFlight.get.passengers + " || Minimum Runway Length: " + minRunwaylength + "m" + "\n" +
+        "Fuel: " + fuel + " litres || Consumption: " + fuelConsumption + "l/min" + " || ETA: " + timeToDestination + "min" + "\n"
+    }
     if (descendRunway.isDefined) basic += "LANDING RUNWAY: #" + descendRunway.get.number + " || Landing starts in " + math.max(this.timeToDestination - 10, 0) + "minutes"
 
     basic

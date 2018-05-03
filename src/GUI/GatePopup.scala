@@ -39,7 +39,6 @@ class GatePopup (val airplane: Airplane, val airport: Airport) extends PopupMenu
     contents += new MenuItem(new Action("Send to hangar") {
           def apply() = {
             airplane.gate.get.unreserve()
-            airport.removePlane(airplane)
       }
     })
   }

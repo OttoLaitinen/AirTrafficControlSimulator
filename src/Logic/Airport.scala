@@ -21,21 +21,24 @@ class Airport(
   var time: Int = 0
   var tick: Int = 0
   var gameIsOn = true
-  val planes: Buffer[Airplane] = Buffer[Airplane]()
+  private var planeBuffer: Buffer[Airplane] = Buffer[Airplane]()
   private var notifications: Buffer[String] = Buffer[String]()
   val random = new Random()
   val descendTime = 30
   var points = 0
 
   /*Functions*/
+  def planes:Buffer[Airplane] = planeBuffer
+  
   private def updatePlanes: Unit = {
     if (tick % 50 == 0) {
       time += 1
       createPlane
-      planes.foreach(plane => if(plane.isInAir) plane.currentFlight.get.update)
+      planeBuffer.foreach(plane => if(plane.isInAir) plane.currentFlight.get.update)
     }
 
-    planes.foreach(_.checkAirplane)
+    planeBuffer.foreach(_.checkAirplane)
+    planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
 
   }
 
@@ -61,7 +64,7 @@ class Airport(
 
   private def createPlane: Unit = {
     if (random.nextFloat() < rushFactor) {
-      planes.+=(creator.createAirplane(this))
+      addPlane(creator.createAirplane(this))
     }
   }
 
@@ -71,8 +74,15 @@ class Airport(
     checkRunways
 
   }
+  def addPlane(airplane: Airplane): Unit = {
+    planeBuffer.+=(airplane)
+    planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
+  }
   
-  def removePlane(airplane: Airplane): Unit = planes.-(airplane)
+  def removePlane(airplane: Airplane): Unit = {
+    planeBuffer.-(airplane)
+    planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
+  }
 
   def getQueueNo(number: Int): Queue = {
     if (queuesInAir.exists(_.idN == number)) queuesInAir.map(queue => queue.idN -> queue).toMap.get(number).get

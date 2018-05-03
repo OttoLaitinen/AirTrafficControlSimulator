@@ -159,7 +159,7 @@ class Creator(fileName: String) {
       var start = destination.take(3).toUpperCase()
       var end = rndm.nextInt(999)
       
-      while (airport.planes.exists(_.currentFlight.get.shortForm == (start + end))) {
+      while (airport.planes.filter(_.currentFlight.isDefined).exists(_.currentFlight.get.shortForm == (start + end))) {
        start = destination.take(3).toUpperCase()
       end = rndm.nextInt(999)
       }
