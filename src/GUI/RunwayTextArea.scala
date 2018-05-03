@@ -39,7 +39,8 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
 
       basic
     }
-    if (isOccupied || crossingIsOccupied) background = Color.RED
+    if (isOccupied) background = Color.RED
+    else if (crossingIsOccupied) background = Color.yellow
     else background = Color.WHITE
     repaint()
   }

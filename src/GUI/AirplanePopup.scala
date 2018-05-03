@@ -23,7 +23,7 @@ class AirplanePopup(val airplane: Airplane, val airport: Airport) extends PopupM
   val dialogFrame = new JFrame()
 
   if (airplane.isInAir && airplane.altitude >= 1000) {
-    //TODO Ei voi olla mahdollista että koneen jo laskeutuessa asiota vaihdetaan
+    
     contents += new MenuItem(new Action("Descend") {
       def apply() = {
         val possibilities: Array[Object] = airport.runways.map(_.number.toString()).toArray
