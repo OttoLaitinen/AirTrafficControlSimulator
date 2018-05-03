@@ -26,6 +26,7 @@ class Airport(
   val random = new Random()
   val descendTime = 30
   var points = 0
+  var endingReason: Option[String] = None
 
   /*Functions*/
   def planes:Buffer[Airplane] = planeBuffer
@@ -47,14 +48,14 @@ class Airport(
       if (crossingRunways.get(way).isDefined) {
         val crossers = crossingRunways.get(way).get
         if (way.currentPlane.isDefined && crossers.exists(_.currentPlane.isDefined)) {
-          println("Planes assigned on crossing runways. Fatal crash happened...")
+          endingReason = Some( "Planes assigned on crossing runways. Fatal crash happened...")
           way.currentPlane.get.crash()
           return crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
         }
       }
       if(way.currentPlane.isDefined) {
         if (way.currentPlane.get.minRunwaylength > way.runwayLength) {
-          println("Run way was too short for the plane. Crash occured...")
+          endingReason = Some( "Runway was too short for the plane. Crash occured...")
           return way.currentPlane.get.crash()
         }            
       }

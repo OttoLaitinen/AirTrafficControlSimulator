@@ -1,5 +1,9 @@
 package Logic
 
+import java.util.concurrent.Executor
+
+
+
 class Runway(
   val runwayLength: Int,
   val number: Int,
@@ -12,9 +16,10 @@ class Runway(
       println("Reserving runway number " + number)
       currentPlane = Some(airplane)
     } else {
-      println("You assigned two planes on the same runway (Runway: " + number + ") and it caused a fatal crash.")
-      currentPlane.get.crash()
-      airplane.crash()
+      throw new Error("Two planes on the same runway")
+//      println("You assigned two planes on the same runway (Runway: " + number + ") and it caused a fatal crash.")
+//      currentPlane.get.crash()
+//      airplane.crash()
     }
   }
 

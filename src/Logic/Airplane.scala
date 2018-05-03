@@ -106,7 +106,15 @@ class Airplane(
       changeAltitude(1500)
     } else if (this.timeToDestination < 10 && !hasReservedRunway && isInAir) {
       hasReservedRunway = true
-      descendRunway.get.reserve(this)
+      try {
+        descendRunway.get.reserve(this)
+      } catch {
+        case c: Error => {
+          airport.endingReason = Some("You assigned two planes on the same runway (Runway: " + descendRunway.get.number + ") and it caused a fatal crash.")
+          this.crash()
+          descendRunway.get.currentPlane.get.crash()  
+        }
+      }
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + descendRunway.get.number + " for landing.")
       changeAltitude(0)
     } else if (this.timeToDestination <= 0 && altitude == 0 && isInAir) {
@@ -126,11 +134,8 @@ class Airplane(
 
   def ascendingOperations: Unit = {
 
-    if (airport.tick % 50 == 0) {
-      ascendingTimer -= 1
+    if (airport.tick % 50 == 0) ascendingTimer -= 1
 
-    }
-    //TODO Nousemisen testaaminen
     if (ascendingTimer <= 0) {
       airport.addNotification("Flight " + this.currentFlight.get.shortForm + " took off succesfully.")
       ascendingRunway.get.unreserve()
@@ -149,7 +154,7 @@ class Airplane(
 
   def timeToAscend: Int = ascendingTimer
 
-  //TODO fix the removing error bug
+  //TODO Korjaa myös nouseville koneille
   override def toString = {
     var basic = ""
     if (this.currentFlight.isDefined) {

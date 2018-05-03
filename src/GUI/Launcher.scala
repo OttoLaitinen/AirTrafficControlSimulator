@@ -49,7 +49,8 @@ object Test {
     game.visible = true
     while (game.isRunning) Thread.sleep(1)
     
-    //TODO End screen with stats and score
+    val end = new EndScreen(airport)
+    end.visible = true
 
     println("End of main function")
 
