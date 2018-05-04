@@ -17,6 +17,8 @@ import javax.swing.JFrame
 import javax.swing.plaf.metal.MetalBorders.QuestionDialogBorder
 import java.awt.Font
 
+/**EndScreen tells the player that the game has ended and displays information 
+ * like points aquired and other stats but also the reason for losing the game*/
 class EndScreen(airport: Airport) extends MainFrame {
   private val width = 400
   private val fullHeight = 600
@@ -62,6 +64,7 @@ class EndScreen(airport: Airport) extends MainFrame {
 
   val mainPanel = new GridBagPanel {
     preferredSize = (new Dimension(width, fullHeight))
+    /**Helper function to make constraints easier.*/
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
       weightx: Double = 0.0, weighty: Double = 0.0,

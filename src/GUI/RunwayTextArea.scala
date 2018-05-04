@@ -7,7 +7,7 @@ import Logic.Airport
 import java.awt.Font
 import scala.swing._
 import java.awt.Color
-
+/**Displas information about a runway*/
 class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
   val textAreaWidth = 600
   val textAreaHeight = 80
@@ -15,8 +15,8 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
   maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   minimumSize_=(new Dimension(textAreaWidth, textAreaHeight))
   border = Swing.LineBorder(Color.BLACK)
-  def crossingIsOccupied = airport.crossingRunways.get(runway).get.exists(_.currentPlane.isDefined)
-  def isOccupied = runway.currentPlane.isDefined
+  def crossingIsOccupied = airport.crossingRunways.get(runway).get.exists(_.isInUse)
+  def isOccupied = runway.isInUse
 
   font = new Font("arial", Font.BOLD, 12)
   
@@ -39,6 +39,9 @@ class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea 
 
       basic
     }
+    /*Colors:
+     * if a runway is occupied it is red
+     * else if crossing runways are occupied textarea is yellow*/
     if (isOccupied) background = Color.RED
     else if (crossingIsOccupied) background = Color.yellow
     else background = Color.WHITE

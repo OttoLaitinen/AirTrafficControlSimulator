@@ -22,6 +22,7 @@ import java.awt.Font
  * *
  */
 class MainGame(airport: Airport) extends MainFrame {
+  
   val width = 1800
   val fullHeight = 900
   val textAreaHeight = 80
@@ -34,7 +35,7 @@ class MainGame(airport: Airport) extends MainFrame {
 
   /*GUI elements
      *
-     * Here are the GUI elements. It is quite messy down here but oh well...*/
+     **/
 
   val closestAirplanes = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
@@ -42,6 +43,7 @@ class MainGame(airport: Airport) extends MainFrame {
     def update = {
       this.contents.clear()
 
+      /*Only planes that have no other place to go are displayed*/
       planesSortedByTime.
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
@@ -58,6 +60,7 @@ class MainGame(airport: Airport) extends MainFrame {
     def update = {
       this.contents.clear()
 
+       /*Only planes that have no other place to go are displayed*/
       airport.planes.
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
@@ -72,6 +75,7 @@ class MainGame(airport: Airport) extends MainFrame {
   val airplanesOnRunways = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
     background = Color.gray
+    
     def update(): Unit = {
       this.contents.clear()
       airport.getPlanesOnRunways.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
@@ -173,6 +177,7 @@ class MainGame(airport: Airport) extends MainFrame {
   val mainPanel = new GridBagPanel {
     background = Color.LIGHT_GRAY
     preferredSize = (new Dimension(width, fullHeight))
+    /**Helper function to make constraints easier.*/
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
       weightx: Double = 0.0, weighty: Double = 0.0,
@@ -227,6 +232,7 @@ class MainGame(airport: Airport) extends MainFrame {
       }
     }
   }
+  
   /**Creates a timer that ticks every 20ms and then starts it.**/
   val timer = new javax.swing.Timer(20, listener)
   timer.start()

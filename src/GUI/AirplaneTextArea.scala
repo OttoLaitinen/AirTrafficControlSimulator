@@ -8,6 +8,8 @@ import java.awt.Color
 import java.awt.Font
 import scala.swing.event.MouseClicked
 
+
+/**AirplaneTextArea is used to display information about an airplane*/
 class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends EditorPane {
   val textAreaWidth = 600
   val textAreaHeight = 80
@@ -18,6 +20,10 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Edi
   preferredSize = (new Dimension(textAreaWidth, textAreaHeight))
   border = Swing.LineBorder(Color.BLACK)
 
+  /*Plane's color is white if it has landed,
+   * yellow if it's shifting its altitude
+   * green if everything is okey 
+   * and red if the plane has no instructions and is close to the airport */
   if (airplane.altitude == 0 && airplane.timeToDestination == 0) background = Color.WHITE
   else if (airplane.isChangingAlt || (airplane.descendRunway.isDefined && airplane.timeToDestination < 30)) background = Color.YELLOW
   else if (airplane.timeToDestination < airport.descendTime) background = Color.RED
@@ -39,7 +45,8 @@ class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends Edi
     basic
   }
   font = new Font("arial", Font.BOLD, 12)
-
+  
+  /*Every textarea has its own popup.*/
   val planePopup = new AirplanePopup(airplane, airport)
 
   listenTo(mouse.clicks)

@@ -19,11 +19,12 @@ import scala.swing.PopupMenu
 import scala.swing.MenuItem
 import scala.swing.Action
 
+/**If gate is reserved by a plane this popup menu may be displayed.
+ * Contains options to either send a plane to a runway or to a hangar.*/
 class GatePopup (val airplane: Airplane, val airport: Airport) extends PopupMenu {
   val dialogFrame = new JFrame()
   
   if (airplane.currentFlight.isDefined) {
-    /*Menu juttuja joissa esim. kiitoradalle tai jonoon lähettäminen*/
         contents += new MenuItem(new Action("Take off") {
           def apply() = {
             val possibilities: Array[Object] = airport.runways.map(_.number.toString()).toArray
@@ -35,7 +36,6 @@ class GatePopup (val airplane: Airplane, val airport: Airport) extends PopupMenu
   }
   
   else {
-    /*Hangaarin lähettäminen aka koneen pelistä poistaminen*/
     contents += new MenuItem(new Action("Send to hangar") {
           def apply() = {
             airplane.gate.get.unreserve()

@@ -9,6 +9,8 @@ import scala.swing._
 import java.awt.Color
 import scala.swing.event.MouseClicked
 
+/**Displays information about a gate.
+ * Only updates when there is a change in the gate's state.*/
 class GateTextArea(val gate: Gate, val airport: Airport) extends TextArea {
   val textAreaWidth = 600
   val textAreaHeight = 40
@@ -20,6 +22,7 @@ class GateTextArea(val gate: Gate, val airport: Airport) extends TextArea {
   var oldtext: String = ""
 
   font = new Font("arial", Font.BOLD, 12)
+  
   def updateText: Unit = {
     if (gate.toString() != oldtext) {
       text = gate.toString()

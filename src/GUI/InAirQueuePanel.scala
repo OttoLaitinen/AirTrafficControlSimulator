@@ -9,7 +9,7 @@ import Logic.LandQueue
 import java.awt.Color
 import scala.swing._
 
-
+/**Contains the textareas of the airplanes that currently are in the queue.*/
 class InAirQueuePanel(queue: InAirQueue, airport: Airport) extends BoxPanel(Orientation.Vertical) {
   border = Swing.LineBorder(Color.BLACK)
   background = Color.lightGray

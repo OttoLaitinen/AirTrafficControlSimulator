@@ -219,6 +219,8 @@ class Airplane(
 
   def timeToAscend: Int = ascendingTimer
   
+  def isInQueue: Boolean = queuingIn.isDefined
+  
  
 
 

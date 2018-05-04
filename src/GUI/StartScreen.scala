@@ -83,6 +83,7 @@ class StartScreen extends MainFrame {
     }
   }
 
+  /**Contains information for the player.*/
   val infoPanel = new EditorPane {
     text = "Hellurei"
     background = Color.BLACK
@@ -119,6 +120,7 @@ class StartScreen extends MainFrame {
 
   val mainPanel = new GridBagPanel {
     preferredSize = (new Dimension(width, fullHeight))
+    /**Helper function to make constraints easier.*/
     def constraints(x: Int, y: Int,
       gridwidth: Int = 1, gridheight: Int = 1,
       weightx: Double = 0.0, weighty: Double = 0.0,
@@ -139,6 +141,7 @@ class StartScreen extends MainFrame {
     add(infoScroller, constraints(1, 1))
   }
 
+  /*Settings for the window*/
   title = "Welcome to ATCS"
   minimumSize = new Dimension(width, fullHeight)
   preferredSize = new Dimension(width, fullHeight)
