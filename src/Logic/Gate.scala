@@ -1,5 +1,7 @@
 package Logic
 
+/**Models a gate in the airport terminal.
+ * Gate can be reserved by a plane.*/
 class Gate(
   val number: Int,
   var isInUse: Boolean = false,

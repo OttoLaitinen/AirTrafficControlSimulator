@@ -3,7 +3,8 @@ package Logic
 import java.util.concurrent.Executor
 
 
-
+/**Models a runway. Knows its length and if a plane is using it or not.
+ * Every runway is assigned a number.*/
 class Runway(
   val runwayLength: Int,
   val number: Int,
@@ -17,9 +18,6 @@ class Runway(
       currentPlane = Some(airplane)
     } else {
       throw new Error("Two planes on the same runway")
-//      println("You assigned two planes on the same runway (Runway: " + number + ") and it caused a fatal crash.")
-//      currentPlane.get.crash()
-//      airplane.crash()
     }
   }
 

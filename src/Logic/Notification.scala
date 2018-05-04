@@ -1,5 +1,0 @@
-package Logic
-
-class Notification {
-  
-}

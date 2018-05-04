@@ -7,7 +7,8 @@ import java.io.FileReader
 import java.io.FileNotFoundException
 import java.io.BufferedReader
 import java.io.IOException
-
+/**Creator contains the JSON parser as well as some creator methods used to create planes, airports or flights.
+ * Also has a method for reading the files containing city and airline names.*/
 class Creator(fileName: String) {
 
   /////////////////////////////////*PARSER STARTS HERE*//////////////////////////////////////////
@@ -17,7 +18,7 @@ class Creator(fileName: String) {
 
   val parsed = JSON.parseFull(configString)
 
-  /*parsedMap is mapped so that all the keys in this map are lower case.
+  /**parsedMap is mapped so that all the keys in this map are lower case.
   * This is done to make it possible to ignore the case when getting values from the map*/
   val parsedMap = parsed.get.asInstanceOf[Map[String, Any]]
     .map(original => (original._1.toLowerCase(), original._2))
@@ -107,6 +108,8 @@ class Creator(fileName: String) {
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
     crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
 
+  /*When creating airplanes or flights as many values are randomised as possible.*/
+  
   def createAirplane(airport: Airport): Airplane = {
     val rndm = new Random()
 
@@ -141,7 +144,7 @@ class Creator(fileName: String) {
   private def createFlight(airplane: Airplane, arriving: Boolean, airport: Airport): Flight = {
     val rndm = new Random()
 
-    /*Necessary values*/
+    /*Destination and departure are taken randomly from the cities list*/
     val destination: String = {
       if (arriving) city
       else {
@@ -162,6 +165,7 @@ class Creator(fileName: String) {
         city2
       }
     }
+    /*shortForm is created using the destination citys first three letters*/
     val shortForm: String = {
       var start = destination.take(3).toUpperCase()
       var end = rndm.nextInt(999)

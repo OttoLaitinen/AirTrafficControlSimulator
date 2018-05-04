@@ -2,7 +2,9 @@ package Logic
 
 import scala.collection.mutable.Buffer
 import scala.util.Random
-
+/**Class Airport models the airport in the simulator and creates and keeps track of all the planes 
+ * and other objects in the game. 
+ * Class also contains the method onTick() that makes the game's objects act.*/
 class Airport(
   creator: Creator,
   val title: String,
@@ -39,15 +41,17 @@ class Airport(
     }
 
     planeBuffer.foreach(_.checkAirplane)
+    /*planeBuffer holds only planes that have currentFlight defined. Other planes are not relevant for the airport.*/
     planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
 
   }
 
+  /**Checks if a runway has a plane that needs a longer runway or if there are planes on crossing runways.*/
   private def checkRunways: Unit = {
     for (way <- runways) {
       if (crossingRunways.get(way).isDefined) {
         val crossers = crossingRunways.get(way).get
-        if (way.currentPlane.isDefined && crossers.exists(_.currentPlane.isDefined)) {
+        if (way.isInUse && crossers.exists(_.isInUse)) {
           endingReason = Some("Planes assigned on crossing runways. Fatal crash happened...")
           way.currentPlane.get.crash()
           return crossers.filter(_.currentPlane.isDefined).foreach(_.currentPlane.get.crash())
@@ -74,6 +78,8 @@ class Airport(
     checkRunways
 
   }
+  
+  
   def addPlane(airplane: Airplane): Unit = {
     planeBuffer.+=(airplane)
     planeBuffer = planeBuffer.filter(_.currentFlight.isDefined)
@@ -113,6 +119,7 @@ class Airport(
 
   def getMaxRWLength: Int = runways.map(_.runwayLength).max
 
+  /**Gives time as a string in hours/minutes format*/
   def getTime: String = {
     val hours: Int = 0 + (time / 60)
     val minutes: Int = 0 + time - (hours * 60)

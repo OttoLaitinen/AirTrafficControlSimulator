@@ -1,5 +1,6 @@
 package Logic
 
+/**Not implemented*/
 class LandQueue(val runway: Runway,val c: Int, val idN: Int) extends Queue(c, idN){
   
   def ascendPlane(airplane: Airplane): Unit = {
