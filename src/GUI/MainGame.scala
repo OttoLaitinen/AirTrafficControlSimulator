@@ -22,11 +22,11 @@ import java.awt.Font
  * *
  */
 class MainGame(airport: Airport) extends MainFrame {
-  
-  val width = 1800
+
+  val width = 1890
   val fullHeight = 900
   val textAreaHeight = 80
-  val textAreaWidth = 600
+  val textAreaWidth = 630
 
   def isRunning = airport.gameIsOn
 
@@ -60,7 +60,7 @@ class MainGame(airport: Airport) extends MainFrame {
     def update = {
       this.contents.clear()
 
-       /*Only planes that have no other place to go are displayed*/
+      /*Only planes that have no other place to go are displayed*/
       airport.planes.
         filterNot(airport.getPlanesAtGates.contains(_)).
         filterNot(airport.getPlanesOnRunways.contains(_)).
@@ -75,7 +75,7 @@ class MainGame(airport: Airport) extends MainFrame {
   val airplanesOnRunways = new BoxPanel(Orientation.Vertical) {
     border = Swing.LineBorder(Color.BLACK)
     background = Color.gray
-    
+
     def update(): Unit = {
       this.contents.clear()
       airport.getPlanesOnRunways.foreach(plane => this.contents.+=:(new AirplaneTextArea(plane, airport)))
@@ -103,7 +103,7 @@ class MainGame(airport: Airport) extends MainFrame {
   }
 
   val airQueuePanel = new TabbedPane {
-    airport.queuesInAir.foreach(queue => pages += new scala.swing.TabbedPane.Page(queue.idNumber.toString() + "m", new InAirQueuePanel(queue, airport)))
+    airport.queuesInAir.foreach(queue => pages += new scala.swing.TabbedPane.Page(queue.idNumber.toString() + "m | Cap: " + queue.c, new InAirQueuePanel(queue, airport)))
     def update(): Unit = {
       pages.foreach(_.content.asInstanceOf[InAirQueuePanel].update)
     }
@@ -124,22 +124,30 @@ class MainGame(airport: Airport) extends MainFrame {
 
   }
 
-  val infoPanel = new EditorPane {
+  val infoPanel = new TextArea {
     def update(): Unit = {
-      text = "Here is some basic info about the game: " + "\n" + "\n" +
-        "Points: " + airport.points + "\n" + "\n" +
-        "Time survived: " + airport.getTime + "\n" + "\n" +
-        "Planes on radar: " + airport.planes.
-        filterNot(airport.getPlanesAtGates.contains(_)).
-        filterNot(airport.getPlanesOnRunways.contains(_)).
-        filterNot(airport.getPlanesInQueues.contains(_)).length + "\n" + "\n" +
-        "Gates free: " + airport.getFreeGates.length + "\n" +
-        "Gueues free: " + airport.getFreeInAirQueues.length
+      text =
+        "Airport: " + airport.airportName + "\n" +
+          "City: " + airport.city + "\n" +
+          "Country: " + airport.country + "\n" + "\n" +
+          "Description: " + "\n" + airport.description + "\n" + "\n" +
+          "Here is some basic info about the game: " + "\n" +
+          "Points: " + airport.points + "\n" + "\n" +
+          "Time survived: " + airport.getTime + "\n" + "\n" +
+          "Planes on radar: " + airport.planes.
+          filterNot(airport.getPlanesAtGates.contains(_)).
+          filterNot(airport.getPlanesOnRunways.contains(_)).
+          filterNot(airport.getPlanesInQueues.contains(_)).length + "\n" + "\n" +
+          "Gates free: " + airport.getFreeGates.length + "\n" +
+          "Gueues free: " + airport.getFreeInAirQueues.length
       revalidate()
       repaint()
     }
     background = Color.lightGray
+    preferredSize_=(new Dimension(textAreaWidth, airplaneInfo.preferredSize.height / 2))
     editable = false
+    wordWrap = true
+    lineWrap = true
   }
 
   val notifications = new BoxPanel(Orientation.Vertical) {
@@ -232,7 +240,7 @@ class MainGame(airport: Airport) extends MainFrame {
       }
     }
   }
-  
+
   /**Creates a timer that ticks every 20ms and then starts it.**/
   val timer = new javax.swing.Timer(20, listener)
   timer.start()

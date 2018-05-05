@@ -42,9 +42,9 @@ object Launcher {
     val creator: Creator = {
       level.get match {
         //TODO Different files for the difficulty settings
-        case 1 => new Creator("Config/test.json")
-        case 2 => new Creator("Config/test.json")
-        case 3 => new Creator("Config/test.json")
+        case 1 => new Creator("Config/Difficulty1.json")
+        case 2 => new Creator("Config/Difficulty2.json")
+        case 3 => new Creator("Config/Difficulty3.json")
       }
     }
     val airport: Airport = creator.createAirport

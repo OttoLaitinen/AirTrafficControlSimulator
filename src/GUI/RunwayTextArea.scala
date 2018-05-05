@@ -9,7 +9,7 @@ import scala.swing._
 import java.awt.Color
 /**Displas information about a runway*/
 class RunwayTextArea(val runway: Runway, val airport: Airport) extends TextArea {
-  val textAreaWidth = 600
+  val textAreaWidth = 630
   val textAreaHeight = 80
   editable = false
   maximumSize_=(new Dimension(textAreaWidth, textAreaHeight))

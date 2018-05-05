@@ -116,7 +116,7 @@ class Airplane(
   def sendToGate(number: Int): Unit = {
     
     if (this.descendRunway.isDefined) {
-      airport.points += this.currentFlight.get.timeToDestination * 10 + this.fuel
+      airport.points += this.currentFlight.get.timeToDestination * 10 + this.fuel * 1
 
       hasReservedRunway = false
       this.descendRunway.get.unreserve()

@@ -41,9 +41,6 @@ class Creator(fileName: String) {
   val gatesAmount = parsedMap.get("gates")
     .get.asInstanceOf[Double].toInt
 
-  val landQueuesData = parsedMap.get("landqueues")
-    .get.asInstanceOf[List[Map[String, Double]]]
-    .map(_.map(original => (original._1.toLowerCase(), original._2.toInt)))
 
   val inAirQueuesData = parsedMap.get("inairqueues")
     .get.asInstanceOf[List[Map[String, Double]]]
@@ -81,12 +78,6 @@ class Creator(fileName: String) {
     gateBuffer.toVector
   }
 
-  val queuesOnGround: Vector[LandQueue] = {
-    landQueuesData.map {
-      data =>
-        new LandQueue(getRunway(data.get("runwayno").get), data.get("capacity").get, data.get("runwayno").get)
-    }.toVector
-  }
 
   val queuesInAir: Vector[InAirQueue] = {
     inAirQueuesData.map {
@@ -106,7 +97,7 @@ class Creator(fileName: String) {
   
 
   def createAirport: Airport = new Airport(this, gameTitle, airportName, country, city, description, runways,
-    crossingRunways, gates, queuesOnGround, queuesInAir, rushFactor)
+    crossingRunways, gates, queuesInAir, rushFactor)
 
   /*When creating airplanes or flights as many values are randomised as possible.*/
   

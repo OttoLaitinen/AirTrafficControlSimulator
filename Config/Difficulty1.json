@@ -1,0 +1,28 @@
+{
+	"TITLE": "LENSIM17: Helppo",
+    "AirportName": "Kuopio Airport",
+    "Country": "Finland",
+    "City": "Kuopio",
+    "Description": "Kuopio Airport was completed in November 1939 and flight operations started in May 1940. It was used by the Luftwaffe during World War II (1942–43). During the Continuation War the runways were made from plywood. The first terminal building was opened in 1949 before a new one replaced it in 1971. In 2004, Kuopio Airport was chosen as the Airport of the Year in Finland. As of 2006, Kuopio Airport was one of only five profitable airports in Finland, thanks to shared use of the runways by the Karelian Air Command of the Finnish Air Force and civilian airlines. Kuopio had its first international scheduled route when AirBaltic operated direct flights to Riga in 2008–2011.",
+    "RushFactor": 0.02,
+    
+    "Runways": [
+    	{"number": 1, "length": 2800, "crosses": []}
+    ],
+    
+    "Gates" : 10,
+    
+    "InAirQueues": [
+    	{"Altitude": 1000},
+    	{"Altitude": 2000},
+    	{"Altitude": 2700},
+    	{"Altitude": 3400},
+    	{"Altitude": 4000}
+    ]
+    
+    
+    
+}
+
+
+

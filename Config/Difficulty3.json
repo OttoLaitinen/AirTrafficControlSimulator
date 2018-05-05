@@ -1,0 +1,31 @@
+{
+	"TITLE": "LENSIM17: Vaikea",
+    "AirportName": "Heathrow",
+    "Country": "Great-Britain",
+    "City": "London",
+    "Description": "Heathrow is the second busiest airport in the world (by international passenger traffic), as well as the busiest airport in Europe by passenger traffic, and the sixth busiest airport in the world by total passenger traffic. It is one of six international airports serving Greater London. In 2017, it handled a record 78.0 million passengers.",
+    "RushFactor": 0.15,
+    
+    "Runways": [
+    	{"number": 1, "length": 3900, "crosses": [2]},
+    	{"number": 2, "length": 3200, "crosses": [1]}, 
+    	{"number": 3, "length": 2800, "crosses": [4]},  
+    	{"number": 4, "length": 2000, "crosses": [3]}
+    ],
+    
+    "Gates" : 25,
+    
+    "InAirQueues": [
+    	{"Altitude": 1000},
+    	{"Altitude": 2000},
+    	{"Altitude": 2700},
+    	{"Altitude": 3400},
+    	{"Altitude": 4000}
+    ]
+    
+    
+    
+}
+
+
+

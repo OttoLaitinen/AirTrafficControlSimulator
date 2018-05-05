@@ -45,7 +45,7 @@ class StartScreen extends MainFrame {
     listenTo(mouse.clicks)
     reactions += {
       case MouseClicked(_, p, _, _, _) => {
-        
+
         levelChosen = Some(1)
         running = false
 
@@ -84,10 +84,13 @@ class StartScreen extends MainFrame {
   }
 
   /**Contains information for the player.*/
-  val infoPanel = new EditorPane {
-    text = "Hellurei"
+  val infoPanel = new TextArea {
+    text = "Hello and welcome to the Air Terminal Control Simulator.  \n\nThis is a game made by Otto Laitinen. \n\nIf you do not know how to play the game, please read the documentation provided with this project."
     background = Color.BLACK
     foreground = Color.WHITE
+    wordWrap = true
+    lineWrap = true
+    preferredSize = new Dimension(width / 2, fullHeight - 100)
 
   }
 

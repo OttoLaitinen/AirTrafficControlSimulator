@@ -2,6 +2,9 @@ package Logic
 
 import scala.collection.mutable.Buffer
 
+/**Models a queue that is in the air or on land.
+ * The queue has a number that it can be identified with but also knows its capacity and 
+ * the planes that currently are in the queue.*/
 abstract class Queue(
   val capacity: Int,
   val idNumber: Int,

@@ -1,0 +1,30 @@
+{
+	"TITLE": "LENSIM17: Keskivaikea",
+    "AirportName": "Helsinki-Vantaa Airport",
+    "Country": "Finland",
+    "City": "Helsinki",
+    "Description": "The airport is the largest in Finland and the fourth busiest in the Nordic countries in terms of passenger numbers. About 90% of Finland's international air traffic passes through Helsinki Airport. The airport handled close to 19 million passengers in 2017, including 16.2 million international passengers and 2.7 million domestic passengers. On average, the airport handles around 350 departures a day.",
+    "RushFactor": 0.05,
+    
+    "Runways": [
+    	{"number": 1, "length": 3500, "crosses": [2]},
+    	{"number": 2, "length": 3060, "crosses": [1]}, 
+    	{"number": 3, "length": 2901, "crosses": []}
+    ],
+    
+    "Gates" : 20,
+    
+    "InAirQueues": [
+    	{"Altitude": 1000},
+    	{"Altitude": 2000},
+    	{"Altitude": 2700},
+    	{"Altitude": 3400},
+    	{"Altitude": 4000}
+    ]
+    
+    
+    
+}
+
+
+

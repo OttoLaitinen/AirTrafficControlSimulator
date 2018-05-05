@@ -12,7 +12,7 @@ import scala.swing.event.MouseClicked
 /**Displays information about a gate.
  * Only updates when there is a change in the gate's state.*/
 class GateTextArea(val gate: Gate, val airport: Airport) extends TextArea {
-  val textAreaWidth = 600
+  val textAreaWidth = 630
   val textAreaHeight = 40
 
   editable = false

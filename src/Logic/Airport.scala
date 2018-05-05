@@ -15,7 +15,6 @@ class Airport(
   val runways: Vector[Runway],
   val crossingRunways: Map[Runway, Vector[Runway]],
   val gates: Vector[Gate],
-  val queuesOnGround: Vector[LandQueue],
   val queuesInAir: Vector[InAirQueue],
   val rushFactor: Double) {
 
@@ -92,7 +91,6 @@ class Airport(
 
   def getQueueNo(number: Int): Queue = {
     if (queuesInAir.exists(_.idN == number)) queuesInAir.map(queue => queue.idN -> queue).toMap.get(number).get
-    else if (queuesOnGround.exists(_.idN == number)) queuesOnGround.map(queue => queue.idN -> queue).toMap.get(number).get
     else throw new Exception("Queue with number " + number + "doesn't exist; there is something wrong with the config files.")
   }
 

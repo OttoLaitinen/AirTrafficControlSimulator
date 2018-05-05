@@ -11,7 +11,7 @@ import scala.swing.event.MouseClicked
 
 /**AirplaneTextArea is used to display information about an airplane*/
 class AirplaneTextArea(val airplane: Airplane, val airport: Airport) extends EditorPane {
-  val textAreaWidth = 600
+  val textAreaWidth = 630
   val textAreaHeight = 80
 
   editable = false

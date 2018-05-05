@@ -43,7 +43,8 @@ class EndScreen(airport: Airport) extends MainFrame {
       "Your game ended because of this reason: \n" +
       ending + "\n \n" +
       "Here are your stats: \n\n" +
-      "Points: " + airport.points + "\n\n" + 
+      "Points: " + airport.points + "\n" + 
+      "Time survived: " + airport.getTime +"\n" + 
       "There might be other stats later but this is it for now..."
       
     background = Color.BLACK
