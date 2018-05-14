@@ -33,6 +33,7 @@ class Airport(
   def planes: Buffer[Airplane] = planeBuffer
 
   private def updatePlanes: Unit = {
+    planeBuffer = planeBuffer.filter(_.currentFlight.isDefined).filter(_.gate.isEmpty)
     if (tick % 50 == 0) {
       time += 1
       createPlane

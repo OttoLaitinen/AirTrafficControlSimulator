@@ -5,7 +5,6 @@ import scala.swing.BoxPanel
 import scala.swing.Orientation
 import Logic.Airport
 import Logic.InAirQueue
-import Logic.LandQueue
 import java.awt.Color
 import scala.swing._
 

@@ -76,6 +76,7 @@ class Airplane(
   def ascend(runwayNo: Int): Unit = {
     airport.addPlane(this)
     gate.get.unreserve()
+    gate = None
     ascendingRunway = Some(airport.getRunwayNo(runwayNo))
     airport.getRunwayNo(runwayNo).reserve(this)
     airport.addNotification("Flight " + this.currentFlight.get.shortForm + " has reserved runway number " + runwayNo + " for take off.")
